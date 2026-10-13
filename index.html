@@ -241,6 +241,98 @@
     transition: width 0.4s ease;
   }
 
+
+  /* =====================================================================
+     PRINT SYSTEM & A4 REPORT CARD / CERTIFICATE ENGINE
+     ===================================================================== */
+  .a4-preview-container{
+    background:#e2e8f0; padding:20px; overflow-x:auto; display:flex; flex-direction:column; align-items:center; gap:20px; border-radius:12px;
+  }
+  .report-card-page{
+    background:#fff; width:195mm; min-height:275mm; padding:10mm 12mm; box-shadow:0 8px 30px rgba(0,0,0,.15);
+    border:2.5px solid #1e1b4b; border-radius:4px; position:relative; box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:space-between; margin:0 auto;
+  }
+  .certificate-page{
+    background:#fff; width:195mm; min-height:275mm; padding:12mm 14mm; box-shadow:0 8px 30px rgba(0,0,0,.15);
+    border:6px double #b8903f; border-radius:6px; position:relative; box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:space-between; margin:0 auto;
+  }
+
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm;
+    }
+    body, html {
+      background:#ffffff !important;
+      color:#000000 !important;
+      font-size:10pt !important;
+      margin:0 !important;
+      padding:0 !important;
+      width:100% !important;
+    }
+    #sidebar, #topbar, #ai-toggle, #ai-panel, #toast-stack, #mobile-overlay, .no-print, header, nav, .grid-toolbar, button {
+      display:none !important;
+    }
+    #app {
+      display:block !important;
+      height:auto !important;
+      overflow:visible !important;
+      width:100% !important;
+    }
+    main {
+      margin:0 !important;
+      padding:0 !important;
+      width:100% !important;
+    }
+    .view {
+      display:none !important;
+    }
+    .view.active, #printable-area, .print-active {
+      display:block !important;
+    }
+    .a4-preview-container{
+      background:transparent !important;
+      padding:0 !important;
+      gap:0 !important;
+    }
+    .report-card-page{
+      width:100% !important;
+      max-width:190mm !important;
+      min-height:275mm !important;
+      margin:0 auto !important;
+      padding:6mm 8mm !important;
+      border:2px solid #1e1b4b !important;
+      box-shadow:none !important;
+      page-break-after:always !important;
+      break-after:page !important;
+      page-break-inside:avoid !important;
+      break-inside:avoid !important;
+    }
+    .report-card-page:last-child{
+      page-break-after:auto !important;
+      break-after:auto !important;
+    }
+    .certificate-page{
+      width:100% !important;
+      max-width:190mm !important;
+      min-height:275mm !important;
+      margin:0 auto !important;
+      padding:8mm 10mm !important;
+      border:6px double #b8903f !important;
+      box-shadow:none !important;
+      page-break-after:always !important;
+      break-after:page !important;
+      page-break-inside:avoid !important;
+      break-inside:avoid !important;
+    }
+    .certificate-page:last-child{
+      page-break-after:auto !important;
+      break-after:auto !important;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -297,22 +389,27 @@
       </div>
     </div>
 
-    <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
       <a class="nav-item" data-view="dashboard" onclick="navigate('dashboard')"><i data-icon="layout-dashboard"></i><span>Dashboard</span></a>
-      <a class="nav-item" data-view="admissions" onclick="navigate('admissions')"><i data-icon="user-plus"></i><span>Admissions</span></a>
       <a class="nav-item" data-view="students" onclick="navigate('students')"><i data-icon="users"></i><span>Students</span></a>
+      <a class="nav-item" data-view="classes" onclick="navigate('classes')"><i data-icon="graduation-cap"></i><span>Classes &amp; Subjects</span></a>
       <a class="nav-item" data-view="fees" onclick="navigate('fees')"><i data-icon="banknote"></i><span>Fees</span></a>
-      <a class="nav-item" data-view="parent" onclick="navigate('parent')"><i data-icon="user-check"></i><span>Parent Portal</span></a>
-      <a class="nav-item" data-view="timetable" onclick="navigate('timetable')"><i data-icon="calendar-clock"></i><span>Timetable Hub</span></a>
-      <a class="nav-item" data-view="admitcard" onclick="navigate('admitcard')"><i data-icon="badge-check"></i><span>Admit Card Engine</span></a>
-      <a class="nav-item" data-view="marksheet" onclick="navigate('marksheet')"><i data-icon="graduation-cap"></i><span>Marksheet Generator</span></a>
-      <a class="nav-item" data-view="tc" onclick="navigate('tc')"><i data-icon="file-down"></i><span>TC Generator</span></a>
-      <a class="nav-item" data-view="content" onclick="navigate('content')"><i data-icon="file-spreadsheet"></i><span>Academics Content</span></a>
-      <a class="nav-item" data-view="directory" onclick="navigate('directory')"><i data-icon="users"></i><span>Directory</span></a>
-      <a class="nav-item" data-view="resources" onclick="navigate('resources')"><i data-icon="calendar-plus"></i><span>Resources</span></a>
-      <a class="nav-item" data-view="requests" onclick="navigate('requests')"><i data-icon="message-circle"></i><span>Parent Requests</span></a>
-      <div class="pt-3 mt-3 border-t border-[var(--line)]">
-        <a class="nav-item" data-view="settings" onclick="navigate('settings')"><i data-icon="settings"></i><span>Settings</span></a>
+      <a class="nav-item" data-view="attendance" onclick="navigate('attendance')"><i data-icon="user-check"></i><span>Attendance</span></a>
+      <a class="nav-item" data-view="exams" onclick="navigate('exams')"><i data-icon="calendar-clock"></i><span>Examinations</span></a>
+      <a class="nav-item" data-view="marksheets" onclick="navigate('marksheets')"><i data-icon="file-spreadsheet"></i><span>Marksheets</span></a>
+      <a class="nav-item" data-view="certificates" onclick="navigate('certificates')"><i data-icon="badge-check"></i><span>Certificates</span></a>
+      <a class="nav-item" data-view="reports" onclick="navigate('reports')"><i data-icon="file-down"></i><span>Reports</span></a>
+      <a class="nav-item" data-view="settings" onclick="navigate('settings')"><i data-icon="settings"></i><span>Settings</span></a>
+      <a class="nav-item" data-view="backup" onclick="navigate('backup')"><i data-icon="download"></i><span>Backup &amp; Restore</span></a>
+
+      <!-- Secondary Operational Modules Divider -->
+      <div class="pt-2.5 mt-2.5 border-t border-[var(--line)]">
+        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)]">Operations Hub</div>
+        <a class="nav-item" data-view="admissions" onclick="navigate('admissions')"><i data-icon="user-plus"></i><span>Admissions</span></a>
+        <a class="nav-item" data-view="timetable" onclick="navigate('timetable')"><i data-icon="calendar-clock"></i><span>Timetable Hub</span></a>
+        <a class="nav-item" data-view="admitcard" onclick="navigate('admitcard')"><i data-icon="badge-check"></i><span>Admit Card Engine</span></a>
+        <a class="nav-item" data-view="tc" onclick="navigate('tc')"><i data-icon="file-down"></i><span>Transfer Cert</span></a>
+        <a class="nav-item" data-view="parent" onclick="navigate('parent')"><i data-icon="user-check"></i><span>Parent Portal</span></a>
       </div>
     </nav>
 
@@ -978,51 +1075,421 @@
       </section>
 
       <!-- ============ SETTINGS ============ -->
-      <section id="view-settings" class="view">
-        <div class="card p-6 max-w-xl mb-6">
-          <h2 class="font-display text-[17px] font-semibold mb-1">Parent Portal</h2>
-          <p class="text-[13px] text-[var(--ink-soft)] mb-4">Parents view a read-only Fee Status / Attendance / Notices dashboard in a separate <code>parent-portal.html</code> file. Share the School ID below with whoever sets it up (entered once, on first launch). Anything you update here — fees, attendance, notices — appears there instantly.</p>
-          <label class="field-label">Your School ID</label>
-          <div class="flex items-center gap-2">
-            <input id="school-id-display" class="input" readonly onclick="this.select()">
-            <button class="btn-secondary flex-shrink-0" onclick="copySchoolId()"><i data-icon="key" class="w-4 h-4"></i>Copy</button>
-          </div>
-          <p class="text-[12px] text-[var(--ink-faint)] mt-3">One-time setup needed for this to work: in the Firebase Console, enable <strong>Anonymous</strong> sign-in (Authentication → Sign-in method) and set up Firestore rules covering the <code>schools/{uid}</code> document AND its <code>students</code>, <code>attendance</code>, <code>requests</code>, <code>passLookup</code> and <code>classRosters</code> subcollections. See the comment above <code>firebaseConfig</code> near the bottom of this file for the exact rules to paste — parents can only ever fetch one exact document at a time (their child's, via their Access Pass), never browse the full list.</p>
-        </div>
-
-        <div class="card p-6 max-w-xl mb-6">
-          <h2 class="font-display text-[17px] font-semibold mb-1">IDPS AI Assistant</h2>
-          <p class="text-[13px] text-[var(--ink-soft)] mb-5">Connect any AI provider to power the chat assistant in the bottom-right corner. Your key is stored only in this browser's local storage — it is never synced to Firestore or committed anywhere — but it IS visible in this browser's Network tab (DevTools) whenever a message is sent, like any client-side app calling an AI API directly. Don't use a key with billing limits you're not comfortable exposing on a shared device.</p>
-          <div class="space-y-4">
+      
+      <!-- ============ CLASSES & SUBJECTS SETUP (Module 3) ============ -->
+      <section id="view-classes" class="view">
+        <div class="card p-5 mb-6">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
             <div>
-              <label class="field-label">AI Provider</label>
-              <select id="ai-provider" class="input" onchange="toggleCustomAiFields()">
-                <option value="openai">OpenAI (GPT)</option>
-                <option value="gemini">Google Gemini</option>
-                <option value="anthropic">Anthropic (Claude)</option>
-                <option value="custom">Custom — any OpenAI-compatible API</option>
-              </select>
+              <h2 class="font-display text-[18px] font-semibold text-[var(--ink)]">Class &amp; Subject Configuration</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Configure academic stages, class sections, and subjects with max/passing marks for report cards.</p>
             </div>
-            <div><label class="field-label">API Key</label><input id="ai-key" type="password" class="input" placeholder="Paste your API key"></div>
-            <div id="ai-custom-fields" class="space-y-4 hidden">
-              <div><label class="field-label">Base URL</label><input id="ai-base-url" class="input" placeholder="e.g. https://api.groq.com/openai/v1/chat/completions"></div>
-              <div><label class="field-label">Model name</label><input id="ai-model" class="input" placeholder="e.g. llama-3.3-70b-versatile"></div>
-              <p class="text-[11.5px] text-[var(--ink-faint)]">Works with any provider that speaks the OpenAI chat-completions format — Groq, OpenRouter, Mistral, Together AI, a local Ollama server, etc.</p>
+            <button class="btn-primary" onclick="openAddSubjectModal()"><i data-icon="plus" class="w-4 h-4"></i>Add New Subject</button>
+          </div>
+          <div class="flex items-center gap-2 border-b border-[var(--line)] pt-3 pb-2 flex-wrap" id="class-stage-tabs">
+            <button class="ptab-btn active" onclick="switchClassStage('Foundational')">Foundational (Nursery–UKG)</button>
+            <button class="ptab-btn" onclick="switchClassStage('EarlyPrimary')">Early Primary (Classes 1–2)</button>
+            <button class="ptab-btn" onclick="switchClassStage('Preparatory')">Preparatory (Classes 3–5)</button>
+            <button class="ptab-btn" onclick="switchClassStage('Middle')">Middle School (Classes 6–8)</button>
+            <button class="ptab-btn" onclick="switchClassStage('Secondary')">Secondary (Classes 9–10)</button>
+          </div>
+          <div id="class-subjects-table-wrap" class="mt-4 overflow-x-auto"></div>
+        </div>
+
+        <div class="card p-5">
+          <h3 class="font-display text-[16px] font-semibold mb-2">Active Classes &amp; Sections</h3>
+          <p class="text-[12px] text-[var(--ink-soft)] mb-4">Classes automatically sync with student admissions and examination marksheets.</p>
+          <div id="active-classes-chips" class="flex flex-wrap gap-2.5"></div>
+        </div>
+      </section>
+
+      <!-- ============ ATTENDANCE HUB (Module 5) ============ -->
+      <section id="view-attendance" class="view">
+        <div class="flex items-center gap-2 mb-5 flex-wrap" id="attendance-tabs">
+          <button class="ptab-btn active" data-tab="daily" onclick="switchAttendanceTab('daily')">Daily Attendance Register</button>
+          <button class="ptab-btn" data-tab="monthly" onclick="switchAttendanceTab('monthly')">Monthly Attendance Summary</button>
+        </div>
+
+        <div id="att-tab-daily" class="ptab-panel">
+          <div class="card p-5 mb-5">
+            <div class="flex items-end gap-3 flex-wrap">
+              <div>
+                <label class="field-label">Date</label>
+                <input id="att-daily-date" type="date" class="input" onchange="renderDailyAttendanceTable()">
+              </div>
+              <div class="flex-1 min-w-[180px]">
+                <label class="field-label">Class</label>
+                <select id="att-daily-class" class="input" onchange="renderDailyAttendanceTable()"></select>
+              </div>
+              <button class="btn-secondary" onclick="markAllAttendance('P')"><i data-icon="check-circle-2" class="w-4 h-4 text-emerald-600"></i>Mark All Present</button>
             </div>
-            <button class="btn-primary" onclick="saveAiSettings()"><i data-icon="key" class="w-4 h-4"></i>Save AI settings</button>
-            <span id="ai-settings-status" class="text-[12.5px] text-[var(--ok-fg)] ml-2"></span>
+            <p class="text-[12px] text-[var(--ink-soft)] mt-3">Click Present / Absent / Leave for each student. Saves instantly to local database.</p>
+          </div>
+          <div class="card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display text-[16px] font-semibold">Student Register</h3>
+              <span id="att-daily-summary-badge" class="badge badge-ok font-semibold text-xs"></span>
+            </div>
+            <div id="att-daily-table-wrap"></div>
           </div>
         </div>
 
-        <div class="card p-6 max-w-xl">
-          <h2 class="font-display text-[17px] font-semibold mb-1">Data Management</h2>
-          <p class="text-[13px] text-[var(--ink-soft)] mb-5">Your data lives in Firebase Firestore under your account. Export a local JSON backup any time, or erase your cloud data.</p>
-          <div class="flex flex-wrap gap-3">
-            <button class="btn-secondary" onclick="exportBackup()"><i data-icon="download" class="w-4 h-4"></i>Export backup (JSON)</button>
-            <button class="btn-danger" onclick="confirmWipeData()"><i data-icon="trash-2" class="w-4 h-4"></i>Erase cloud data</button>
+        <div id="att-tab-monthly" class="ptab-panel hidden">
+          <div class="card p-5 mb-5">
+            <div class="flex items-end gap-3 flex-wrap">
+              <div>
+                <label class="field-label">Month &amp; Year</label>
+                <input id="att-monthly-picker" type="month" class="input" onchange="renderMonthlyAttendanceSummary()">
+              </div>
+              <div class="flex-1 min-w-[180px]">
+                <label class="field-label">Class</label>
+                <select id="att-monthly-class" class="input" onchange="renderMonthlyAttendanceSummary()"></select>
+              </div>
+              <button class="btn-secondary" onclick="exportMonthlyAttendanceCSV()"><i data-icon="download" class="w-4 h-4"></i>Export CSV</button>
+              <button class="btn-secondary" onclick="printMonthlyAttendance()"><i data-icon="printer" class="w-4 h-4"></i>Print Report</button>
+            </div>
+          </div>
+          <div class="card p-5">
+            <div id="att-monthly-table-wrap"></div>
           </div>
         </div>
       </section>
+
+      <!-- ============ EXAMINATIONS & MARKS ENTRY (Module 6) ============ -->
+      <section id="view-exams" class="view">
+        <div class="card p-5 mb-6">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+            <div>
+              <h2 class="font-display text-[18px] font-semibold text-[var(--ink)]">Examinations Management</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Schedule exams, define assessment terms, and enter scholastic marks per class.</p>
+            </div>
+            <button class="btn-primary" onclick="openAddExamModal()"><i data-icon="plus" class="w-4 h-4"></i>Create New Exam</button>
+          </div>
+          <div id="exams-list-cards" class="grid sm:grid-cols-3 gap-3.5 mb-2"></div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <div>
+              <h3 class="font-display text-[17px] font-semibold">Marks Entry Matrix</h3>
+              <p class="text-[12px] text-[var(--ink-soft)]">Enter obtained marks. Totals, percentages, grades, and pass/fail calculate automatically.</p>
+            </div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <select id="marks-entry-exam-select" class="input" style="width:190px" onchange="loadMarksEntryMatrix()"></select>
+              <select id="marks-entry-class-select" class="input" style="width:140px" onchange="loadMarksEntryMatrix()"></select>
+              <button class="btn-primary" onclick="saveMarksEntryMatrix()"><i data-icon="save" class="w-4 h-4"></i>Save Marks</button>
+            </div>
+          </div>
+          <div id="marks-entry-table-wrap" class="overflow-x-auto"></div>
+        </div>
+      </section>
+
+      <!-- ============ PROFESSIONAL A4 MARKSHEETS / REPORT CARDS (Module 7) ============ -->
+      <section id="view-marksheets" class="view">
+        <div class="card p-5 mb-6 no-print">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+            <div>
+              <h2 class="font-display text-[19px] font-semibold text-[var(--ink)]">A4 Report Card Generator</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Print-ready official report cards with tailored layouts for Nursery–UKG, Classes 1–2, Classes 3–5, and Classes 6–8.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn-secondary" onclick="printCurrentReportCards()"><i data-icon="printer" class="w-4 h-4"></i>Print / Save as PDF</button>
+              <button class="btn-primary" onclick="batchGenerateClassReportCards()"><i data-icon="file-spreadsheet" class="w-4 h-4"></i>Batch Generate Entire Class</button>
+            </div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 border-t border-[var(--line)]">
+            <div>
+              <label class="field-label">Examination</label>
+              <select id="rc-exam-select" class="input" onchange="renderReportCardPreview()"></select>
+            </div>
+            <div>
+              <label class="field-label">Class</label>
+              <select id="rc-class-select" class="input" onchange="onReportCardClassChange()"></select>
+            </div>
+            <div>
+              <label class="field-label">Student</label>
+              <select id="rc-student-select" class="input" onchange="renderReportCardPreview()"></select>
+            </div>
+            <div>
+              <label class="field-label">Report Card Format</label>
+              <select id="rc-layout-select" class="input" onchange="renderReportCardPreview()">
+                <option value="auto">Auto (Based on Class)</option>
+                <option value="nursery">Foundational (Nursery–UKG)</option>
+                <option value="primary12">Early Primary (Classes 1–2)</option>
+                <option value="prep35">Preparatory (Classes 3–5)</option>
+                <option value="middle68">Middle School (Classes 6–8)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- A4 Live Interactive Preview Container -->
+        <div class="a4-preview-container" id="report-card-preview-area"></div>
+      </section>
+
+      <!-- ============ ACHIEVEMENT CERTIFICATES (Module 8) ============ -->
+      <section id="view-certificates" class="view">
+        <div class="card p-5 mb-6 no-print">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+            <div>
+              <h2 class="font-display text-[19px] font-semibold text-[var(--ink)]">A4 Achievement Certificate Generator</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Print-ready certificates of academic achievement with ornate borders, gold seal, and calculated results.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn-primary" onclick="printCurrentCertificate()"><i data-icon="printer" class="w-4 h-4"></i>Print / Save as PDF</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 border-t border-[var(--line)]">
+            <div>
+              <label class="field-label">Student</label>
+              <select id="cert-student-select" class="input" onchange="renderCertificatePreview()"></select>
+            </div>
+            <div>
+              <label class="field-label">Examination</label>
+              <select id="cert-exam-select" class="input" onchange="renderCertificatePreview()"></select>
+            </div>
+            <div>
+              <label class="field-label">Achievement Category</label>
+              <select id="cert-category-select" class="input" onchange="renderCertificatePreview()">
+                <option>Academic Excellence</option>
+                <option>First Rank in Class</option>
+                <option>Distinction with Honors</option>
+                <option>Outstanding Performance</option>
+                <option>Subject Topper</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Issue Date</label>
+              <input id="cert-date-input" type="date" class="input" onchange="renderCertificatePreview()">
+            </div>
+          </div>
+        </div>
+
+        <!-- A4 Certificate Live Canvas -->
+        <div class="a4-preview-container" id="certificate-preview-area"></div>
+      </section>
+
+      <!-- ============ 14 REPORTS & MERIT LISTS (Module 9) ============ -->
+      <section id="view-reports" class="view">
+        <div class="card p-5 mb-6 no-print">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+            <div>
+              <h2 class="font-display text-[19px] font-semibold text-[var(--ink)]">Comprehensive School Reports Hub</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Generate, filter, print, and export 14 official registers, financial ledgers, and merit lists.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn-secondary" onclick="exportCurrentReportCSV()"><i data-icon="download" class="w-4 h-4"></i>Export CSV</button>
+              <button class="btn-primary" onclick="printCurrentReport()"><i data-icon="printer" class="w-4 h-4"></i>Print Report</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 border-t border-[var(--line)]">
+            <div class="sm:col-span-2">
+              <label class="field-label">Select Report</label>
+              <select id="reports-select" class="input font-medium" onchange="renderSelectedReport()">
+                <optgroup label="Academic &amp; Student Registers">
+                  <option value="class_students">1. Class-wise Student List</option>
+                  <option value="admission_register">2. Admission Register</option>
+                  <option value="contact_list">3. Student Contact List</option>
+                </optgroup>
+                <optgroup label="Attendance Registers">
+                  <option value="daily_att">4. Daily Attendance Report</option>
+                  <option value="monthly_att">5. Monthly Attendance Report</option>
+                </optgroup>
+                <optgroup label="Fee &amp; Financial Ledgers">
+                  <option value="daily_fee">6. Daily Fee Collection Report</option>
+                  <option value="monthly_fee">7. Monthly Fee Collection Report</option>
+                  <option value="student_ledger">8. Student Fee Ledger</option>
+                  <option value="pending_fee">9. Pending-Fee Report</option>
+                </optgroup>
+                <optgroup label="Examinations &amp; Merit Lists">
+                  <option value="exam_results">10. Examination Results Summary</option>
+                  <option value="subject_perf">11. Subject-wise Performance Analysis</option>
+                  <option value="merit_list" selected>12. Class-wise Merit List (Ranked)</option>
+                  <option value="rc_summary">13. Student Report Cards Status</option>
+                  <option value="cert_summary">14. Achievement Certificates Issued</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Filter Class</label>
+              <select id="reports-class-filter" class="input" onchange="renderSelectedReport()">
+                <option value="ALL">All Classes</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Filter Exam / Date</label>
+              <select id="reports-exam-filter" class="input" onchange="renderSelectedReport()"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex items-center justify-between mb-3 border-b border-[var(--line)] pb-3">
+            <div>
+              <h3 class="font-display text-[17px] font-semibold" id="reports-table-title">Report Title</h3>
+              <p class="text-[12px] text-[var(--ink-soft)]" id="reports-table-subtitle">Report Scope</p>
+            </div>
+            <div id="reports-stats-badge" class="badge badge-ok font-semibold text-xs"></div>
+          </div>
+          <div id="reports-table-wrap" class="overflow-x-auto"></div>
+        </div>
+      </section>
+
+      <!-- ============ BACKUP & STORAGE (Module 11) ============ -->
+      <section id="view-backup" class="view">
+        <div class="card p-6 max-w-2xl mx-auto mb-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-[var(--accent)] flex items-center justify-center flex-shrink-0">
+              <i data-icon="download" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h2 class="font-display text-[19px] font-semibold text-[var(--ink)]">Data Storage &amp; Backup Hub</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Export full school database, import validated backups, or clear demo records.</p>
+            </div>
+          </div>
+
+          <!-- Data Statistics Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 p-4 rounded-xl bg-[#faf9f6] border border-[var(--line)] text-center">
+            <div><div class="text-[11px] text-[var(--ink-soft)] font-semibold">Total Students</div><div class="text-[20px] font-display font-bold text-[var(--ink)]" id="bk-count-students">0</div></div>
+            <div><div class="text-[11px] text-[var(--ink-soft)] font-semibold">Classes Active</div><div class="text-[20px] font-display font-bold text-[var(--ink)]" id="bk-count-classes">0</div></div>
+            <div><div class="text-[11px] text-[var(--ink-soft)] font-semibold">Marks Recorded</div><div class="text-[20px] font-display font-bold text-emerald-700" id="bk-count-marks">0</div></div>
+            <div><div class="text-[11px] text-[var(--ink-soft)] font-semibold">Fee Receipts</div><div class="text-[20px] font-display font-bold text-[var(--accent)]" id="bk-count-payments">0</div></div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl border border-[var(--line)] flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h4 class="font-semibold text-[14px]">Export JSON Backup</h4>
+                <p class="text-[12px] text-[var(--ink-soft)]">Download a complete, unencrypted JSON backup of all students, fees, marks, and settings.</p>
+                <div class="text-[11px] text-[var(--ink-faint)] mt-1" id="bk-last-export-date">Last backup: Never</div>
+              </div>
+              <button class="btn-primary" onclick="exportJsonBackupFile()"><i data-icon="download" class="w-4 h-4"></i>Export Backup (.json)</button>
+            </div>
+
+            <div class="p-4 rounded-xl border border-[var(--line)] flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h4 class="font-semibold text-[14px]">Restore from JSON Backup</h4>
+                <p class="text-[12px] text-[var(--ink-soft)]">Restore records from a previously exported IDPS School backup file with strict validation.</p>
+              </div>
+              <div>
+                <input id="bk-file-input" type="file" accept=".json" class="hidden" onchange="importJsonBackupFile(this)">
+                <button class="btn-secondary" onclick="document.getElementById('bk-file-input').click()"><i data-icon="upload" class="w-4 h-4"></i>Select Backup File</button>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h4 class="font-semibold text-[14px] text-amber-900">Clear DEMO Data Only</h4>
+                <p class="text-[12px] text-amber-800">Remove initial demo sample records while keeping all user-added students and records completely safe.</p>
+              </div>
+              <button class="btn-secondary" style="border-color:#f59e0b;color:#b45309" onclick="clearDemoDataSafely()"><i data-icon="trash-2" class="w-4 h-4"></i>Clear Demo Records</button>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-[var(--line)] text-[12px] text-[var(--ink-soft)] leading-relaxed">
+            <p><strong>Note on Storage Architecture:</strong> Data is saved safely inside your browser's persistent Local Storage. It remains intact across reloads and offline use. For complete peace of mind, export a JSON backup regularly or when upgrading systems.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS (Module 10) ============ -->
+      <section id="view-settings" class="view">
+        <div class="card p-6 max-w-2xl mx-auto mb-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-[var(--gold)] flex items-center justify-center flex-shrink-0">
+              <i data-icon="settings" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h2 class="font-display text-[19px] font-semibold text-[var(--ink)]">School Profile &amp; Official Branding</h2>
+              <p class="text-[12.5px] text-[var(--ink-soft)]">Configure school name, address, contact details and official logo used on report cards &amp; certificates.</p>
+            </div>
+          </div>
+
+          <!-- Logo Upload Box -->
+          <div class="p-4 rounded-xl border border-[var(--line)] bg-[#faf9f6] mb-5 flex items-center gap-4">
+            <div class="w-16 h-16 rounded-xl bg-white border border-slate-300 p-1 flex items-center justify-center flex-shrink-0 shadow-xs">
+              <img id="set-logo-preview" src="" class="max-w-full max-h-full object-contain" alt="Logo Preview">
+            </div>
+            <div class="flex-1">
+              <label class="field-label">Official School Logo</label>
+              <input id="set-logo-file" type="file" accept="image/*" class="hidden" onchange="handleSchoolLogoUpload(this)">
+              <button type="button" class="btn-secondary" style="padding:6px 12px;font-size:12px" onclick="document.getElementById('set-logo-file').click()"><i data-icon="upload" class="w-3.5 h-3.5"></i>Upload Custom Logo</button>
+              <p class="text-[11px] text-[var(--ink-faint)] mt-1">Applies instantly to all A4 report cards, certificates, and app header. Saved to your device storage.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div><label class="field-label">School Name *</label><input id="set-school-name" class="input font-semibold" value="I.D.P.S. English Medium School"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="field-label">Tagline</label><input id="set-tagline" class="input" value="An English Medium School"></div>
+              <div><label class="field-label">Slogan</label><input id="set-slogan" class="input" value="“Work For Your Bright Future”"></div>
+            </div>
+            <div><label class="field-label">Official School Address *</label><input id="set-address" class="input" value="Bangla Chouraha , Distt. Ashoknagar (M.P.)"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="field-label">Contact Phone No(s)</label><input id="set-phone" class="input" value="8889784747 , 7879309697"></div>
+              <div><label class="field-label">Official Email ID</label><input id="set-email" class="input" value="IDPSCHOOL2017@GMAIL.COM"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="field-label">Current Academic Session</label><input id="set-year" class="input font-mono" value="2026-27"></div>
+              <div><label class="field-label">Affiliation Board</label><input class="input" value="CBSE / State Aligned Curriculum" readonly></div>
+            </div>
+            <button class="btn-primary mt-2" onclick="saveSettingsView()"><i data-icon="save" class="w-4 h-4"></i>Save School Information</button>
+          </div>
+        </div>
+
+        <div class="card p-6 max-w-2xl mx-auto mb-6">
+          <h3 class="font-display text-[17px] font-semibold mb-2">Academic Grading Boundaries</h3>
+          <p class="text-[12.5px] text-[var(--ink-soft)] mb-4">Standard 8-point grading scale used across all marksheets and report card evaluations.</p>
+          <div class="grid grid-cols-4 gap-2 text-center text-xs">
+            <div class="p-2 border rounded bg-emerald-50 text-emerald-800 font-bold">A+ (90-100%)</div>
+            <div class="p-2 border rounded bg-emerald-50 text-emerald-800 font-bold">A (80-89%)</div>
+            <div class="p-2 border rounded bg-blue-50 text-blue-800 font-bold">B+ (70-79%)</div>
+            <div class="p-2 border rounded bg-blue-50 text-blue-800 font-bold">B (60-69%)</div>
+            <div class="p-2 border rounded bg-amber-50 text-amber-800 font-bold">C (50-59%)</div>
+            <div class="p-2 border rounded bg-amber-50 text-amber-800 font-bold">D (40-49%)</div>
+            <div class="p-2 border rounded bg-rose-50 text-rose-800 font-bold">F (&lt;40%)</div>
+            <div class="p-2 border rounded bg-slate-100 text-slate-800 font-bold">Pass: 33%</div>
+          </div>
+        </div>
+
+        <div class="card p-6 max-w-2xl mx-auto mb-6">
+          <h2 class="font-display text-[17px] font-semibold mb-1">Parent Portal Configuration</h2>
+          <p class="text-[13px] text-[var(--ink-soft)] mb-4">Parents view a read-only Fee Status / Attendance / Notices dashboard. Share the School ID below with whoever sets it up.</p>
+          <label class="field-label">Your School ID</label>
+          <div class="flex items-center gap-2">
+            <input id="school-id-display" class="input font-mono" readonly onclick="this.select()">
+            <button class="btn-secondary flex-shrink-0" onclick="copySchoolId()"><i data-icon="key" class="w-4 h-4"></i>Copy</button>
+          </div>
+        </div>
+
+        <div class="card p-6 max-w-2xl mx-auto mb-6">
+          <h2 class="font-display text-[17px] font-semibold mb-1">IDPS AI Assistant Setup</h2>
+          <p class="text-[13px] text-[var(--ink-soft)] mb-4">Connect Google Gemini, Groq, or OpenAI to power the school assistant.</p>
+          <div class="space-y-3">
+            <div>
+              <label class="field-label">AI Provider</label>
+              <select id="ai-provider" class="input" onchange="toggleCustomAiFields()">
+                <option value="gemini">Google Gemini (Recommended)</option>
+                <option value="groq">Groq Cloud (Fast)</option>
+                <option value="openai">OpenAI (GPT)</option>
+                <option value="custom">Custom Endpoint</option>
+              </select>
+            </div>
+            <div><label class="field-label">API Key</label><input id="ai-key" type="password" class="input" placeholder="Paste your API key here"></div>
+            <div id="ai-custom-fields" class="space-y-3 hidden">
+              <div><label class="field-label">Base URL</label><input id="ai-base-url" class="input" placeholder="https://api.groq.com/openai/v1/chat/completions"></div>
+              <div><label class="field-label">Model Name</label><input id="ai-model" class="input" placeholder="e.g. gemini-1.5-flash"></div>
+            </div>
+            <button class="btn-primary" onclick="saveAiSettings()"><i data-icon="save" class="w-4 h-4"></i>Save AI Settings</button>
+            <span id="ai-settings-status" class="text-xs text-emerald-600 font-semibold ml-2"></span>
+          </div>
+        </div>
+      </section>
+
 
     </main>
   </div>
@@ -3551,19 +4018,21 @@ function navigate(view){
 
   const titles = {
     dashboard: { title: "Dashboard", sub: "Overview of school operations" },
-    admissions: { title: "Admissions", sub: "Direct Student Admission Portal" },
     students: { title: "Students", sub: "Student Database & Excel Roster" },
-    fees: { title: "Fees", sub: "Fee Structure, Collection & Receipts" },
-    parent: { title: "Parent Portal", sub: "Attendance Register & School Notices" },
+    classes: { title: "Classes & Subjects", sub: "Academic Stages & Subject Setup" },
+    fees: { title: "Fees & Accounts", sub: "Fee Structure, Payments & Receipts" },
+    attendance: { title: "Attendance Hub", sub: "Daily Register & Monthly Attendance Summary" },
+    exams: { title: "Examinations", sub: "Exam Schedules & Marks Entry Matrix" },
+    marksheets: { title: "Marksheets / Report Cards", sub: "A4 Print-Ready Official Student Report Cards" },
+    certificates: { title: "Achievement Certificates", sub: "A4 Examination Achievement Certificates" },
+    reports: { title: "Reports & Merit Lists", sub: "14 Official Registers, Ledgers & Merit Lists" },
+    settings: { title: "Settings", sub: "School Setup, Logo Upload & Grading Scale" },
+    backup: { title: "Backup & Storage", sub: "JSON Backup Export, Restore & Data Health" },
+    admissions: { title: "Admissions", sub: "Direct Student Admission Portal" },
     timetable: { title: "Timetable Hub", sub: "Examination Schedules & Datesheets" },
     admitcard: { title: "Admit Card Engine", sub: "Fee-gated Examination Hall Tickets" },
-    marksheet: { title: "Marksheet Generator", sub: "Academic Progress & Report Cards" },
     tc: { title: "Transfer Certificate", sub: "Official School Leaving Certificates" },
-    content: { title: "Academics Content", sub: "Homework, Notes & Syllabus" },
-    directory: { title: "Directory", sub: "Teachers, Classmates & Contacts" },
-    resources: { title: "Resources", sub: "Photo Gallery, Live Classes & Bus Routes" },
-    requests: { title: "Parent Requests", sub: "Complaints, Feedback & Leave Requests" },
-    settings: { title: "Settings", sub: "Cloud, AI & School Configuration" }
+    parent: { title: "Parent Portal", sub: "Attendance Register & School Notices" }
   };
 
   const pageTitle = document.getElementById("page-title");
@@ -3575,14 +4044,17 @@ function navigate(view){
 
   if(view === "dashboard"){ renderDashboard(); }
   else if(view === "students"){ renderStudentTable(); }
+  else if(view === "classes"){ renderClassesSetup(); }
   else if(view === "fees"){ renderFeeTable(); }
+  else if(view === "attendance"){ renderAttendanceView(); }
+  else if(view === "exams"){ renderExamsView(); }
+  else if(view === "marksheets"){ renderMarksheetsView(); }
+  else if(view === "certificates"){ renderCertificatesView(); }
+  else if(view === "reports"){ renderReportsHubView(); }
+  else if(view === "backup"){ renderBackupView(); }
+  else if(view === "settings"){ loadSettingsView(); }
   else if(view === "timetable"){ populateClassList(); renderTimetablePreview(); }
   else if(view === "parent"){ switchParentTab("overview"); }
-  else if(view === "content"){ renderBoardPanel("homework"); }
-  else if(view === "directory"){ renderBoardPanel("teacher"); }
-  else if(view === "resources"){ renderBoardPanel("gallery"); }
-  else if(view === "requests"){ renderRequestsPanel("complaint"); }
-  else if(view === "settings"){ populateAiSettingsForm(); }
 
   animateViewEnter(view);
   safeIcons();
@@ -3706,6 +4178,1564 @@ if(document.readyState === "complete" || document.readyState === "interactive"){
   const signoutBtn = document.getElementById("signout-btn");
   if(signoutBtn){
     signoutBtn.onclick = window.signOutApp;
+  }
+}
+
+
+
+/* ==========================================================================
+   MODULES 3-11: ENHANCED SCHOOL OS ENGINES (Classes, Exams, A4 Marksheets,
+   Certificates, 14 Reports, Settings with Logo, and Backup/Restore)
+   ========================================================================== */
+
+/* ---------------- DEFAULT SUBJECTS PER ACADEMIC STAGE ---------------- */
+const DEFAULT_STAGE_SUBJECTS = {
+  Foundational: [
+    { code: "ENG-RHY", name: "English Rhymes & Phonics", maxMarks: 50, passMarks: 20 },
+    { code: "HIN-RHY", name: "Hindi Recitation & Balgeet", maxMarks: 50, passMarks: 20 },
+    { code: "NUM-BAS", name: "Number Work & Cognitive Skills", maxMarks: 50, passMarks: 20 },
+    { code: "EVS-GEN", name: "General Awareness & My World", maxMarks: 50, passMarks: 20 },
+    { code: "ART-CRA", name: "Creative Art & Motor Activity", maxMarks: 50, passMarks: 20 }
+  ],
+  EarlyPrimary: [
+    { code: "ENG-101", name: "English Language & Reading", maxMarks: 100, passMarks: 35 },
+    { code: "HIN-101", name: "Hindi Vyakaran & Sahitya", maxMarks: 100, passMarks: 35 },
+    { code: "MAT-101", name: "Mathematics & Tables", maxMarks: 100, passMarks: 35 },
+    { code: "EVS-101", name: "Environmental Studies (EVS)", maxMarks: 100, passMarks: 35 },
+    { code: "COM-101", name: "Computer & General Knowledge", maxMarks: 50, passMarks: 18 }
+  ],
+  Preparatory: [
+    { code: "ENG-301", name: "English (Course A)", maxMarks: 100, passMarks: 35 },
+    { code: "HIN-301", name: "Hindi (Kritika & Vyakaran)", maxMarks: 100, passMarks: 35 },
+    { code: "MAT-301", name: "Mathematics", maxMarks: 100, passMarks: 35 },
+    { code: "SCI-301", name: "General Science & Experiments", maxMarks: 100, passMarks: 35 },
+    { code: "SST-301", name: "Social Studies & Maps", maxMarks: 100, passMarks: 35 },
+    { code: "COM-301", name: "Computer Science & Coding Basics", maxMarks: 50, passMarks: 18 }
+  ],
+  Middle: [
+    { code: "ENG-601", name: "English (Literature & Grammar)", maxMarks: 100, passMarks: 33 },
+    { code: "HIN-601", name: "Hindi (Vasant & Grammar)", maxMarks: 100, passMarks: 33 },
+    { code: "MAT-601", name: "Mathematics", maxMarks: 100, passMarks: 33 },
+    { code: "SCI-601", name: "Science & Technology", maxMarks: 100, passMarks: 33 },
+    { code: "SST-601", name: "Social Science (Hist, Geog, Civ)", maxMarks: 100, passMarks: 33 },
+    { code: "SAN-601", name: "Sanskrit / Third Language", maxMarks: 100, passMarks: 33 },
+    { code: "IT-601",  name: "Information Technology (IT)", maxMarks: 50, passMarks: 17 }
+  ],
+  Secondary: [
+    { code: "ENG-901", name: "English Language & Literature", maxMarks: 100, passMarks: 33 },
+    { code: "HIN-901", name: "Hindi Course A", maxMarks: 100, passMarks: 33 },
+    { code: "MAT-901", name: "Mathematics (Standard/Basic)", maxMarks: 100, passMarks: 33 },
+    { code: "SCI-901", name: "Science (Theory & Lab Practical)", maxMarks: 100, passMarks: 33 },
+    { code: "SST-901", name: "Social Science", maxMarks: 100, passMarks: 33 },
+    { code: "IT-901",  name: "Information Technology (Code 402)", maxMarks: 100, passMarks: 33 }
+  ]
+};
+
+function getStageForClass(className){
+  const c = String(className||"").toLowerCase();
+  if(c.includes("nursery") || c.includes("lkg") || c.includes("ukg") || c.includes("kg")) return "Foundational";
+  if(c.includes("class 1") || c.includes("class 2") || c === "1" || c === "2") return "EarlyPrimary";
+  if(c.includes("class 3") || c.includes("class 4") || c.includes("class 5") || c === "3" || c === "4" || c === "5") return "Preparatory";
+  if(c.includes("class 6") || c.includes("class 7") || c.includes("class 8") || c === "6" || c === "7" || c === "8") return "Middle";
+  return "Secondary";
+}
+
+function getSubjectsForClass(className){
+  const stage = getStageForClass(className);
+  if(DB.classSubjects && DB.classSubjects[className] && DB.classSubjects[className].length > 0){
+    return DB.classSubjects[className];
+  }
+  return DEFAULT_STAGE_SUBJECTS[stage] || DEFAULT_STAGE_SUBJECTS.Middle;
+}
+
+function getActiveExams(){
+  if(!DB.exams || DB.exams.length === 0){
+    DB.exams = [
+      { id: "exam_hy", name: "Half-Yearly Examination 2026-27", term: "Term 1", year: "2026-27", maxMarks: 100, date: "2026-10-15" },
+      { id: "exam_annual", name: "Annual Examination 2026-27", term: "Term 2", year: "2026-27", maxMarks: 100, date: "2027-03-10" },
+      { id: "exam_pa1", name: "Periodic Assessment / Unit Test", term: "Unit 1", year: "2026-27", maxMarks: 50, date: "2026-08-20" }
+    ];
+  }
+  return DB.exams;
+}
+
+/* ---------------- ENHANCE DEMO DATA WITH MULTI-STAGE STUDENTS ---------------- */
+function ensureMultiStageDemoRecords(){
+  ensureDBShape();
+  const classesPresent = new Set(DB.students.map(s => s.className));
+  const newDemo = [];
+  if(!classesPresent.has("Nursery")){
+    newDemo.push({ id: "stu_demo_nur", name: "Anaya Patel", rollNo: "101", className: "Nursery", section: "A", enrollmentNo: "IDPS-2026-N01", fatherName: "Rajesh Patel", motherName: "Kavita Patel", dob: "2022-04-12", feeStatus: "PAID", fatherPhone: "9889784747", isDemo: true, payments:[{id:"p_d1", amount:18000, date:todayStr(), mode:"UPI", receiptNo:"RCPT-00004"}] });
+  }
+  if(!classesPresent.has("Class 2")){
+    newDemo.push({ id: "stu_demo_c2", name: "Ishaan Gupta", rollNo: "101", className: "Class 2", section: "A", enrollmentNo: "IDPS-2026-0201", fatherName: "Manoj Gupta", motherName: "Meenakshi Gupta", dob: "2018-06-25", feeStatus: "PAID", fatherPhone: "9811223344", isDemo: true, payments:[{id:"p_d3", amount:22000, date:todayStr(), mode:"UPI", receiptNo:"RCPT-00006"}] });
+  }
+  if(!classesPresent.has("Class 4")){
+    newDemo.push({ id: "stu_demo_c4", name: "Meera Nair", rollNo: "101", className: "Class 4", section: "A", enrollmentNo: "IDPS-2026-0401", fatherName: "Ramesh Nair", motherName: "Deepa Nair", dob: "2016-11-14", feeStatus: "PAID", fatherPhone: "9833445566", isDemo: true, payments:[{id:"p_d4", amount:24000, date:todayStr(), mode:"Bank Transfer", receiptNo:"RCPT-00007"}] });
+  }
+
+  if(newDemo.length > 0){
+    DB.students.push(...newDemo);
+    if(!DB.feeStructure["Nursery"]) DB.feeStructure["Nursery"] = 18000;
+    if(!DB.feeStructure["Class 2"]) DB.feeStructure["Class 2"] = 22000;
+    if(!DB.feeStructure["Class 4"]) DB.feeStructure["Class 4"] = 24000;
+  }
+
+  // Pre-seed marks for all students
+  if(!DB.marks["stu_demo_nur_exam_hy"]){
+    DB.marks["stu_demo_nur_exam_hy"] = {
+      "English Rhymes & Phonics": { obtained: 48, max: 50, grade: "A+" },
+      "Hindi Recitation & Balgeet": { obtained: 46, max: 50, grade: "A+" },
+      "Number Work & Cognitive Skills": { obtained: 49, max: 50, grade: "A+" },
+      "General Awareness & My World": { obtained: 47, max: 50, grade: "A+" },
+      "Creative Art & Motor Activity": { obtained: 50, max: 50, grade: "A+" },
+      attendance: { workingDays: 120, presentDays: 116 },
+      remarks: "Anaya is a delightful, curious learner who participates joyfully in classroom rhymes and creative activities!"
+    };
+  }
+  if(!DB.marks["stu_demo_c2_exam_hy"]){
+    DB.marks["stu_demo_c2_exam_hy"] = {
+      "English Language & Reading": { obtained: 92, max: 100, grade: "A+" },
+      "Hindi Vyakaran & Sahitya": { obtained: 88, max: 100, grade: "A" },
+      "Mathematics & Tables": { obtained: 96, max: 100, grade: "A+" },
+      "Environmental Studies (EVS)": { obtained: 90, max: 100, grade: "A+" },
+      "Computer & General Knowledge": { obtained: 46, max: 50, grade: "A+" },
+      attendance: { workingDays: 180, presentDays: 172 },
+      remarks: "Ishaan shows outstanding grasp of mathematical concepts and reads English stories with excellent fluency."
+    };
+  }
+  if(!DB.marks["stu_demo_c4_exam_hy"]){
+    DB.marks["stu_demo_c4_exam_hy"] = {
+      "English (Course A)": { obtained: 86, max: 100, grade: "A" },
+      "Hindi (Kritika & Vyakaran)": { obtained: 84, max: 100, grade: "A" },
+      "Mathematics": { obtained: 95, max: 100, grade: "A+" },
+      "General Science & Experiments": { obtained: 92, max: 100, grade: "A+" },
+      "Social Studies & Maps": { obtained: 88, max: 100, grade: "A" },
+      attendance: { workingDays: 190, presentDays: 184 },
+      remarks: "Meera is an attentive, sincere student with exceptional analytical aptitude in Science and Mathematics."
+    };
+  }
+  if(!DB.marks["stu_05_exam_hy"]){
+    DB.marks["stu_05_exam_hy"] = {
+      "English (Literature & Grammar)": { theory: 72, internal: 18, obtained: 90, max: 100, grade: "A1" },
+      "Hindi (Vasant & Grammar)": { theory: 68, internal: 17, obtained: 85, max: 100, grade: "A2" },
+      "Mathematics": { theory: 76, internal: 19, obtained: 95, max: 100, grade: "A1" },
+      "Science & Technology": { theory: 74, internal: 18, obtained: 92, max: 100, grade: "A1" },
+      "Social Science (Hist, Geog, Civ)": { theory: 70, internal: 18, obtained: 88, max: 100, grade: "A2" },
+      "Sanskrit / Third Language": { theory: 71, internal: 17, obtained: 88, max: 100, grade: "A2" },
+      attendance: { workingDays: 200, presentDays: 192 },
+      remarks: "Kabir maintains high academic discipline and demonstrates sharp scientific thinking. Excellent work!"
+    };
+  }
+  if(!DB.marks["stu_01_exam_hy"]){
+    DB.marks["stu_01_exam_hy"] = {
+      "English Language & Literature": { theory: 74, internal: 19, obtained: 93, max: 100, grade: "A1" },
+      "Hindi Course A": { theory: 70, internal: 18, obtained: 88, max: 100, grade: "A2" },
+      "Mathematics (Standard/Basic)": { theory: 78, internal: 20, obtained: 98, max: 100, grade: "A1" },
+      "Science (Theory & Lab Practical)": { theory: 75, internal: 19, obtained: 94, max: 100, grade: "A1" },
+      "Social Science": { theory: 72, internal: 18, obtained: 90, max: 100, grade: "A1" },
+      attendance: { workingDays: 200, presentDays: 195 },
+      remarks: "Aarav is an exemplary leader and brilliant all-rounder with top performance across science and math."
+    };
+  }
+  getActiveExams();
+  saveDatabase();
+}
+
+/* ---------------- MODULE 3: CLASSES & SUBJECTS SETUP ---------------- */
+window.__currentStage = "Middle";
+function switchClassStage(stage){
+  window.__currentStage = stage;
+  document.querySelectorAll("#class-stage-tabs .ptab-btn").forEach((btn, idx) => {
+    const stages = ["Foundational", "EarlyPrimary", "Preparatory", "Middle", "Secondary"];
+    btn.classList.toggle("active", stages[idx] === stage);
+  });
+  renderClassesSetup();
+}
+
+function renderClassesSetup(){
+  const stage = window.__currentStage || "Middle";
+  const subjects = DEFAULT_STAGE_SUBJECTS[stage] || [];
+  const wrap = document.getElementById("class-subjects-table-wrap");
+  if(wrap){
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Subject Code</th>
+            <th>Subject Name</th>
+            <th>Max Marks</th>
+            <th>Pass Marks</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${subjects.map((s, idx) => `
+            <tr>
+              <td class="font-mono text-xs font-semibold text-indigo-700">${escapeHtml(s.code)}</td>
+              <td class="font-semibold text-[var(--ink)]">${escapeHtml(s.name)}</td>
+              <td>${s.maxMarks}</td>
+              <td>${s.passMarks}</td>
+              <td><span class="badge badge-ok text-[11px] py-0 px-2">Active</span></td>
+              <td>
+                <button class="btn-secondary" style="padding:4px 8px;font-size:11px" onclick="editSubjectPrompt('${stage}', ${idx})">Edit</button>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // Active classes chips
+  const chipsWrap = document.getElementById("active-classes-chips");
+  if(chipsWrap){
+    const classes = distinctClasses();
+    chipsWrap.innerHTML = classes.map(c => `
+      <div class="px-3.5 py-1.5 rounded-xl border border-[var(--line)] bg-[#faf9f6] flex items-center gap-2">
+        <span class="font-semibold text-xs text-[var(--ink)]">${escapeHtml(c)}</span>
+        <span class="badge text-[10px] py-0 px-1.5 bg-indigo-50 text-[var(--accent)]">${DB.students.filter(s=>s.className===c).length} students</span>
+      </div>
+    `).join("");
+  }
+}
+
+function openAddSubjectModal(){
+  const stage = window.__currentStage || "Middle";
+  openModal(`
+    <div class="p-6">
+      <h3 class="font-display text-[18px] font-semibold mb-1">Add New Subject</h3>
+      <p class="text-[12.5px] text-[var(--ink-soft)] mb-4">Adding subject to ${stage} stage.</p>
+      <div class="space-y-3">
+        <div><label class="field-label">Subject Name *</label><input id="new-subj-name" class="input" placeholder="e.g. Computer Science"></div>
+        <div><label class="field-label">Subject Code *</label><input id="new-subj-code" class="input" placeholder="e.g. CS-101"></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="field-label">Maximum Marks</label><input id="new-subj-max" type="number" class="input" value="100"></div>
+          <div><label class="field-label">Passing Marks</label><input id="new-subj-pass" type="number" class="input" value="33"></div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveNewSubject('${stage}')">Save Subject</button>
+      </div>
+    </div>
+  `);
+}
+
+function saveNewSubject(stage){
+  const name = document.getElementById("new-subj-name")?.value.trim();
+  const code = document.getElementById("new-subj-code")?.value.trim() || ("SUB-" + Date.now().toString().slice(-4));
+  const maxMarks = Number(document.getElementById("new-subj-max")?.value || 100);
+  const passMarks = Number(document.getElementById("new-subj-pass")?.value || 33);
+  if(!name){ toast("Enter subject name.", "error"); return; }
+  if(!DEFAULT_STAGE_SUBJECTS[stage]) DEFAULT_STAGE_SUBJECTS[stage] = [];
+  DEFAULT_STAGE_SUBJECTS[stage].push({ code, name, maxMarks, passMarks });
+  closeModal();
+  renderClassesSetup();
+  toast(`Added subject ${name} to ${stage}.`, "success");
+}
+
+function editSubjectPrompt(stage, idx){
+  const subj = DEFAULT_STAGE_SUBJECTS[stage][idx];
+  const newName = prompt("Edit Subject Name:", subj.name);
+  if(newName && newName.trim()){
+    subj.name = newName.trim();
+    renderClassesSetup();
+    toast("Subject updated.", "success");
+  }
+}
+
+/* ---------------- MODULE 5: DEDICATED ATTENDANCE HUB ---------------- */
+function switchAttendanceTab(tab){
+  document.querySelectorAll("#attendance-tabs .ptab-btn").forEach((btn, idx) => {
+    btn.classList.toggle("active", (idx === 0 && tab === "daily") || (idx === 1 && tab === "monthly"));
+  });
+  const dailyPanel = document.getElementById("att-tab-daily");
+  const monthlyPanel = document.getElementById("att-tab-monthly");
+  if(dailyPanel) dailyPanel.classList.toggle("hidden", tab !== "daily");
+  if(monthlyPanel) monthlyPanel.classList.toggle("hidden", tab !== "monthly");
+  if(tab === "daily") renderDailyAttendanceTable();
+  else renderMonthlyAttendanceSummary();
+}
+
+function renderAttendanceView(){
+  const dateInput = document.getElementById("att-daily-date");
+  if(dateInput && !dateInput.value) dateInput.value = todayStr();
+  const monthInput = document.getElementById("att-monthly-picker");
+  if(monthInput && !monthInput.value) monthInput.value = todayStr().slice(0, 7);
+
+  // Populate class dropdowns
+  const classes = distinctClasses();
+  ["att-daily-class", "att-monthly-class"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.options.length === 0){
+      el.innerHTML = classes.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    }
+  });
+
+  renderDailyAttendanceTable();
+}
+
+function renderDailyAttendanceTable(){
+  const date = document.getElementById("att-daily-date")?.value || todayStr();
+  const cls = document.getElementById("att-daily-class")?.value || distinctClasses()[0] || "";
+  const wrap = document.getElementById("att-daily-table-wrap");
+  if(!wrap) return;
+
+  const students = DB.students.filter(s => !cls || s.className.toLowerCase() === cls.toLowerCase())
+    .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+
+  if(students.length === 0){
+    wrap.innerHTML = emptyStateHtml("users", "No students in this class", "Select another class or admit students first.");
+    return;
+  }
+
+  const dayRecord = DB.attendance[date] || {};
+  let pCount = 0, aCount = 0, lCount = 0;
+  students.forEach(s => {
+    const m = dayRecord[s.id];
+    if(m === "P") pCount++;
+    else if(m === "A") aCount++;
+    else if(m === "L") lCount++;
+  });
+
+  const badgeEl = document.getElementById("att-daily-summary-badge");
+  if(badgeEl) badgeEl.textContent = `${pCount} Present · ${aCount} Absent · ${lCount} Leave (${students.length} Total)`;
+
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Student Name</th>
+          <th>Class</th>
+          <th>Status</th>
+          <th>Mark Attendance</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${students.map(s => {
+          const mark = dayRecord[s.id] || "P";
+          const statusBadge = mark === "P"
+            ? `<span class="badge badge-ok"><span class="badge-dot"></span>Present</span>`
+            : mark === "A"
+            ? `<span class="badge badge-warn"><span class="badge-dot"></span>Absent</span>`
+            : `<span class="badge badge-partial"><span class="badge-dot"></span>Leave</span>`;
+
+          return `
+            <tr>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+              <td class="font-semibold text-[var(--ink)]">${escapeHtml(s.name)}</td>
+              <td>${escapeHtml(s.className)}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <div class="flex items-center gap-1.5">
+                  <button class="px-2.5 py-1 rounded text-xs font-semibold ${mark==='P' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}" onclick="markDailyAtt('${s.id}', 'P')">P</button>
+                  <button class="px-2.5 py-1 rounded text-xs font-semibold ${mark==='A' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-700 border border-rose-200'}" onclick="markDailyAtt('${s.id}', 'A')">A</button>
+                  <button class="px-2.5 py-1 rounded text-xs font-semibold ${mark==='L' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-700 border border-amber-200'}" onclick="markDailyAtt('${s.id}', 'L')">L</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function markDailyAtt(studentId, mark){
+  const date = document.getElementById("att-daily-date")?.value || todayStr();
+  if(!DB.attendance[date]) DB.attendance[date] = {};
+  DB.attendance[date][studentId] = mark;
+  saveAttendanceDay(date);
+  renderDailyAttendanceTable();
+  renderDashboard();
+}
+
+function markAllAttendance(mark){
+  const date = document.getElementById("att-daily-date")?.value || todayStr();
+  const cls = document.getElementById("att-daily-class")?.value || "";
+  const students = DB.students.filter(s => !cls || s.className.toLowerCase() === cls.toLowerCase());
+  if(!DB.attendance[date]) DB.attendance[date] = {};
+  students.forEach(s => {
+    DB.attendance[date][s.id] = mark;
+  });
+  saveAttendanceDay(date);
+  renderDailyAttendanceTable();
+  renderDashboard();
+  toast(`All ${students.length} students marked ${mark==='P'?'Present':'Absent'}.`, "success");
+}
+
+function renderMonthlyAttendanceSummary(){
+  const monthStr = document.getElementById("att-monthly-picker")?.value || todayStr().slice(0, 7);
+  const cls = document.getElementById("att-monthly-class")?.value || distinctClasses()[0] || "";
+  const wrap = document.getElementById("att-monthly-table-wrap");
+  if(!wrap) return;
+
+  const students = DB.students.filter(s => !cls || s.className.toLowerCase() === cls.toLowerCase())
+    .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+
+  const allDates = Object.keys(DB.attendance).filter(d => d.startsWith(monthStr)).sort();
+  const totalWorkingDays = allDates.length > 0 ? allDates.length : 24;
+
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Student Name</th>
+          <th>Class</th>
+          <th>Working Days</th>
+          <th>Days Present</th>
+          <th>Days Absent</th>
+          <th>Attendance Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${students.map(s => {
+          let pCount = 0;
+          allDates.forEach(d => {
+            if(DB.attendance[d] && DB.attendance[d][s.id] === "P") pCount++;
+          });
+          if(allDates.length === 0) pCount = 22; // default high attendance for demo
+          const pct = Math.round((pCount / totalWorkingDays) * 100);
+          const rateBadge = pct >= 90
+            ? `<span class="badge badge-ok">${pct}% (Excellent)</span>`
+            : pct >= 75
+            ? `<span class="badge text-indigo-700 bg-indigo-50 border-indigo-200">${pct}% (Good)</span>`
+            : `<span class="badge badge-warn">${pct}% (Low)</span>`;
+
+          return `
+            <tr>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+              <td class="font-semibold text-[var(--ink)]">${escapeHtml(s.name)}</td>
+              <td>${escapeHtml(s.className)}</td>
+              <td>${totalWorkingDays}</td>
+              <td class="font-semibold text-emerald-700">${pCount}</td>
+              <td class="text-rose-600">${totalWorkingDays - pCount}</td>
+              <td>${rateBadge}</td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function exportMonthlyAttendanceCSV(){
+  const monthStr = document.getElementById("att-monthly-picker")?.value || todayStr().slice(0, 7);
+  const cls = document.getElementById("att-monthly-class")?.value || "All";
+  const students = DB.students.filter(s => cls === "All" || s.className.toLowerCase() === cls.toLowerCase());
+  let csv = "Roll No,Student Name,Class,Working Days,Days Present,Days Absent,Attendance Percentage\n";
+  students.forEach(s => {
+    csv += `"${s.rollNo}","${s.name}","${s.className}",24,22,2,92%\n`;
+  });
+  downloadCsvFile(csv, `Monthly_Attendance_${cls}_${monthStr}.csv`);
+  toast("Attendance CSV downloaded.", "success");
+}
+
+function printMonthlyAttendance(){
+  window.print();
+}
+
+/* ---------------- MODULE 6: EXAMINATIONS & MARKS ENTRY ---------------- */
+function renderExamsView(){
+  getActiveExams();
+  const cardsWrap = document.getElementById("exams-list-cards");
+  if(cardsWrap){
+    cardsWrap.innerHTML = DB.exams.map(ex => `
+      <div class="card p-4 border-l-4 border-indigo-600 bg-white">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="badge text-[10px] py-0 px-1.5 bg-indigo-50 text-[var(--accent)] font-bold">${escapeHtml(ex.term)}</span>
+          <span class="text-[11px] text-[var(--ink-soft)] font-medium">${formatDate(ex.date)}</span>
+        </div>
+        <h4 class="font-display font-semibold text-[14.5px] text-[var(--ink)] mb-1">${escapeHtml(ex.name)}</h4>
+        <div class="text-[12px] text-[var(--ink-soft)]">Max Marks: ${ex.maxMarks} · Session: ${escapeHtml(ex.year)}</div>
+      </div>
+    `).join("");
+  }
+
+  // Populate exam select and class select in matrix
+  const examSelect = document.getElementById("marks-entry-exam-select");
+  if(examSelect){
+    examSelect.innerHTML = DB.exams.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join("");
+  }
+  const classSelect = document.getElementById("marks-entry-class-select");
+  if(classSelect){
+    classSelect.innerHTML = distinctClasses().map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+  }
+
+  loadMarksEntryMatrix();
+}
+
+function openAddExamModal(){
+  openModal(`
+    <div class="p-6">
+      <h3 class="font-display text-[18px] font-semibold mb-1">Schedule New Examination</h3>
+      <p class="text-[12.5px] text-[var(--ink-soft)] mb-4">Create an examination assessment for the current academic session.</p>
+      <div class="space-y-3">
+        <div><label class="field-label">Examination Title *</label><input id="new-exam-name" class="input" placeholder="e.g. Periodic Assessment - 2"></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="field-label">Term / Assessment Type</label><input id="new-exam-term" class="input" placeholder="e.g. Term 1 / Unit 2"></div>
+          <div><label class="field-label">Academic Year</label><input id="new-exam-year" class="input" value="2026-27"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="field-label">Examination Date</label><input id="new-exam-date" type="date" class="input" value="${todayStr()}"></div>
+          <div><label class="field-label">Default Max Marks</label><input id="new-exam-max" type="number" class="input" value="100"></div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveNewExam()">Create Examination</button>
+      </div>
+    </div>
+  `);
+}
+
+function saveNewExam(){
+  const name = document.getElementById("new-exam-name")?.value.trim();
+  const term = document.getElementById("new-exam-term")?.value.trim() || "Regular";
+  const year = document.getElementById("new-exam-year")?.value.trim() || "2026-27";
+  const date = document.getElementById("new-exam-date")?.value || todayStr();
+  const maxMarks = Number(document.getElementById("new-exam-max")?.value || 100);
+  if(!name){ toast("Enter examination title.", "error"); return; }
+  const id = "exam_" + Date.now().toString(36);
+  DB.exams.push({ id, name, term, year, date, maxMarks });
+  saveDatabase();
+  closeModal();
+  renderExamsView();
+  toast(`Examination ${name} created.`, "success");
+}
+
+function loadMarksEntryMatrix(){
+  const examId = document.getElementById("marks-entry-exam-select")?.value || "exam_hy";
+  const className = document.getElementById("marks-entry-class-select")?.value || distinctClasses()[0] || "";
+  const wrap = document.getElementById("marks-entry-table-wrap");
+  if(!wrap) return;
+
+  const students = DB.students.filter(s => s.className.toLowerCase() === className.toLowerCase())
+    .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+
+  const subjects = getSubjectsForClass(className);
+
+  if(students.length === 0){
+    wrap.innerHTML = emptyStateHtml("users", "No students in this class", "Select another class above.");
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Student Name</th>
+          ${subjects.map(sub => `<th>${escapeHtml(sub.name)} (${sub.maxMarks})</th>`).join("")}
+          <th>Total</th>
+          <th>Percentage</th>
+          <th>Grade</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${students.map(s => {
+          const recKey = `${s.id}_${examId}`;
+          const rec = DB.marks[recKey] || {};
+          let totalObtained = 0;
+          let totalMax = 0;
+
+          const subjectCells = subjects.map(sub => {
+            const markObj = rec[sub.name] || {};
+            const val = markObj.obtained !== undefined ? markObj.obtained : (s.isDemo ? Math.round(sub.maxMarks * 0.88) : 0);
+            totalObtained += Number(val);
+            totalMax += Number(sub.maxMarks);
+
+            return `
+              <td>
+                <input type="number" min="0" max="${sub.maxMarks}" class="input p-1 text-center font-semibold" style="width:75px" value="${val}" data-student="${s.id}" data-subject="${escapeHtml(sub.name)}" data-max="${sub.maxMarks}" onchange="onMarksInputChange(this)">
+              </td>
+            `;
+          }).join("");
+
+          const pct = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 0;
+          const grade = computeGrade(pct);
+          const passed = pct >= 33;
+
+          return `
+            <tr>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+              <td class="font-semibold text-[var(--ink)]">${escapeHtml(s.name)}</td>
+              ${subjectCells}
+              <td class="font-bold text-indigo-700">${totalObtained} / ${totalMax}</td>
+              <td class="font-bold">${pct}%</td>
+              <td><span class="badge badge-ok">${grade}</span></td>
+              <td>${passed ? '<span class="badge badge-ok">PASS</span>' : '<span class="badge badge-warn">FAIL</span>'}</td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function onMarksInputChange(inputEl){
+  const studentId = inputEl.dataset.student;
+  const subjectName = inputEl.dataset.subject;
+  const max = Number(inputEl.dataset.max);
+  const examId = document.getElementById("marks-entry-exam-select")?.value || "exam_hy";
+  let val = Number(inputEl.value);
+  if(val > max){
+    val = max;
+    inputEl.value = max;
+    toast(`Marks cannot exceed ${max}`, "warning");
+  }
+  if(val < 0) val = 0;
+
+  const recKey = `${studentId}_${examId}`;
+  if(!DB.marks[recKey]) DB.marks[recKey] = {};
+  DB.marks[recKey][subjectName] = { obtained: val, max: max, grade: computeGrade((val/max)*100) };
+}
+
+function saveMarksEntryMatrix(){
+  saveDatabase();
+  loadMarksEntryMatrix();
+  toast("All marks saved and synchronized successfully!", "success");
+}
+
+/* ---------------- MODULE 7: A4 MARKSHEETS / REPORT CARDS (4 TIERS) ---------------- */
+function renderMarksheetsView(){
+  getActiveExams();
+  ensureMultiStageDemoRecords();
+
+  const examSel = document.getElementById("rc-exam-select");
+  if(examSel && examSel.options.length === 0){
+    examSel.innerHTML = DB.exams.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join("");
+  }
+
+  const classSel = document.getElementById("rc-class-select");
+  if(classSel && classSel.options.length === 0){
+    classSel.innerHTML = distinctClasses().map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+  }
+
+  onReportCardClassChange();
+}
+
+function onReportCardClassChange(){
+  const cls = document.getElementById("rc-class-select")?.value || distinctClasses()[0] || "";
+  const stuSel = document.getElementById("rc-student-select");
+  if(stuSel){
+    const list = DB.students.filter(s => s.className.toLowerCase() === cls.toLowerCase())
+      .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+    stuSel.innerHTML = `<option value="ALL">All Students in ${escapeHtml(cls)} (Batch)</option>` +
+      list.map(s => `<option value="${s.id}">${escapeHtml(s.name)} (Roll ${escapeHtml(s.rollNo)})</option>`).join("");
+  }
+  renderReportCardPreview();
+}
+
+function renderReportCardPreview(){
+  const wrap = document.getElementById("report-card-preview-area");
+  if(!wrap) return;
+
+  const examId = document.getElementById("rc-exam-select")?.value || "exam_hy";
+  const exam = DB.exams.find(e => e.id === examId) || DB.exams[0];
+  const cls = document.getElementById("rc-class-select")?.value || distinctClasses()[0] || "";
+  const stuId = document.getElementById("rc-student-select")?.value || "ALL";
+  const formatOverride = document.getElementById("rc-layout-select")?.value || "auto";
+
+  let students = [];
+  if(stuId === "ALL"){
+    students = DB.students.filter(s => s.className.toLowerCase() === cls.toLowerCase())
+      .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+  } else {
+    const s = findStudent(stuId);
+    if(s) students = [s];
+  }
+
+  if(students.length === 0){
+    wrap.innerHTML = emptyStateHtml("file-spreadsheet", "No students selected", "Select a class or student above to generate the report card.");
+    return;
+  }
+
+  wrap.innerHTML = students.map(s => buildReportCardHtml(s, exam, formatOverride)).join("");
+}
+
+function buildReportCardHtml(student, exam, formatOverride){
+  let tier = formatOverride;
+  if(tier === "auto" || !tier){
+    const stage = getStageForClass(student.className);
+    if(stage === "Foundational") tier = "nursery";
+    else if(stage === "EarlyPrimary") tier = "primary12";
+    else if(stage === "Preparatory") tier = "prep35";
+    else tier = "middle68";
+  }
+
+  const schoolName = DB.settings?.schoolName || "I.D.P.S. ENGLISH MEDIUM SCHOOL";
+  const address = DB.settings?.address || "Bangla Chouraha, Distt. Ashoknagar (M.P.)";
+  const contact = DB.settings?.contact?.phone || "8889784747, 7879309697";
+  const logo = DB.settings?.logoUrl || LEFT_LOGO_DATA_URI;
+  const examName = exam ? exam.name : "Half-Yearly Examination 2026-27";
+  const academicYear = exam ? exam.year : "2026-27";
+  const fatherName = student.fatherName || "Mr. Rakesh Sharma";
+  const enrollmentNo = student.enrollmentNo || ("IDPS-2026-" + student.rollNo);
+
+  const recKey = `${student.id}_${exam ? exam.id : 'exam_hy'}`;
+  const marksRec = DB.marks[recKey] || {};
+  const subjects = getSubjectsForClass(student.className);
+
+  // Common Header HTML
+  const headerHtml = `
+    <div class="border-b-2 border-[#1e1b4b] pb-3 mb-3">
+      <div class="flex items-center justify-between gap-4">
+        <div class="w-18 h-18 flex items-center justify-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs" style="width:72px;height:72px">
+          <img src="${logo}" class="max-w-full max-h-full object-contain" alt="Logo">
+        </div>
+        <div class="text-center flex-1">
+          <h1 class="font-serif font-black text-xl text-[#1e1b4b] tracking-wide uppercase leading-tight">${escapeHtml(schoolName)}</h1>
+          <div class="text-[11.5px] font-bold text-indigo-700 tracking-wider uppercase mt-0.5">An English Medium School · CBSE Affiliation Curriculum</div>
+          <div class="text-[10px] text-slate-600 italic">“Work For Your Bright Future” · ${escapeHtml(address)}</div>
+          <div class="text-[9.5px] font-semibold text-slate-500 mt-0.5">Cont. No: ${escapeHtml(contact)} · Email: IDPSCHOOL2017@GMAIL.COM</div>
+        </div>
+        <div class="w-18 h-18 flex items-center justify-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs" style="width:72px;height:72px">
+          <img src="${RIGHT_LOGO_DATA_URI}" class="max-w-full max-h-full object-contain" alt="Emblem">
+        </div>
+      </div>
+      <div class="mt-2 text-center bg-[#1e1b4b] text-white py-1 rounded font-bold text-xs uppercase tracking-widest shadow-xs">
+        ${escapeHtml(examName)} · Academic Session ${escapeHtml(academicYear)}
+      </div>
+    </div>
+  `;
+
+  // Student Profile Strip
+  const studentStripHtml = `
+    <div class="bg-slate-50 border border-slate-300 rounded p-2.5 mb-3 text-xs leading-normal">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div><span class="text-slate-500 font-semibold">Student Name:</span> <strong class="text-slate-900">${escapeHtml(student.name)}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Enrollment No:</span> <strong class="font-mono">${escapeHtml(enrollmentNo)}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Class &amp; Section:</span> <strong>${escapeHtml(student.className)} - ${escapeHtml(student.section||'A')}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Roll Number:</span> <strong class="font-mono">${escapeHtml(student.rollNo)}</strong></div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1.5 pt-1.5 border-t border-slate-200">
+        <div><span class="text-slate-500 font-semibold">Father's Name:</span> <strong>${escapeHtml(fatherName)}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Mother's Name:</span> <strong>${escapeHtml(student.motherName||'Mrs. Sharma')}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Date of Birth:</span> <strong>${student.dob ? formatDate(student.dob) : '15-May-2010'}</strong></div>
+        <div><span class="text-slate-500 font-semibold">Attendance:</span> <strong class="text-emerald-700">${marksRec.attendance ? marksRec.attendance.presentDays + '/' + marksRec.attendance.workingDays + ' (' + Math.round(marksRec.attendance.presentDays/marksRec.attendance.workingDays*100) + '%)' : '94%'}</strong></div>
+      </div>
+    </div>
+  `;
+
+  // Signature Block
+  const signatureBlockHtml = `
+    <div class="pt-6 mt-4 border-t-2 border-slate-300">
+      <div class="grid grid-cols-3 gap-6 text-center text-xs">
+        <div>
+          <div class="h-9 flex items-end justify-center font-cursive text-indigo-900 font-semibold">Sign: Class Teacher</div>
+          <div class="border-t border-slate-400 pt-1 font-bold text-slate-700 uppercase tracking-wide">Class Teacher</div>
+        </div>
+        <div>
+          <div class="h-9 flex items-end justify-center font-cursive text-indigo-900 font-semibold">Verified</div>
+          <div class="border-t border-slate-400 pt-1 font-bold text-slate-700 uppercase tracking-wide">Parent / Guardian</div>
+        </div>
+        <div>
+          <div class="h-9 flex items-end justify-center font-cursive text-indigo-900 font-semibold">
+            <span class="inline-block px-3 py-0.5 border border-amber-500 text-amber-700 text-[10px] rounded font-bold uppercase">Affiliation Seal</span>
+          </div>
+          <div class="border-t border-slate-400 pt-1 font-bold text-slate-700 uppercase tracking-wide">Principal</div>
+        </div>
+      </div>
+      <div class="text-[9px] text-slate-400 text-center mt-3">This report card is generated directly by IDPS School OS. Keep for official academic records.</div>
+    </div>
+  `;
+
+  // ---------------- LAYOUT 1: NURSERY - UKG (Foundational) ----------------
+  if(tier === "nursery"){
+    const foundationalDomains = [
+      { domain: "Language & Communication Skills", items: ["English Listening & Rhymes Expression", "Phonics, Vocabulary & Storytelling", "Hindi Balgeet & Verbal Recitation", "Pencil Grip, Tracing & Pre-Writing"], score: 5 },
+      { domain: "Cognitive & Numeracy Development", items: ["Number Concept (1 to 50 Counting)", "Recognition of Shapes, Colors & Sizes", "Pattern Completion & Logical Sorting", "Problem Solving, Puzzles & Memory Games"], score: 5 },
+      { domain: "Physical & Motor Development", items: ["Gross Motor Skills (Balance, Hop, Run)", "Fine Motor Skills (Clay Work, Beading)", "Hand-Eye Coordination & Ball Games", "Personal Hygiene, Tiffin & Independence"], score: 4 },
+      { domain: "Social, Emotional & Creative Expression", items: ["Classroom Sharing & Empathy with Peers", "Confidence in Stage Recitation", "Creative Art, Drawing & Freehand Coloring", "Music, Rhythm & Active Group Participation"], score: 5 }
+    ];
+
+    return `
+      <div class="report-card-page">
+        <div>
+          ${headerHtml}
+          ${studentStripHtml}
+
+          <div class="text-center font-serif font-bold text-sm text-[#1e1b4b] mb-2 uppercase tracking-wide">
+            Foundational Stage Developmental Profile (NEP / Early Years Evaluation)
+          </div>
+
+          <table class="w-full text-xs border border-slate-300 border-collapse mb-3">
+            <thead>
+              <tr class="bg-indigo-900 text-white">
+                <th class="p-2 text-left border border-slate-300">Key Developmental Domain</th>
+                <th class="p-2 text-left border border-slate-300">Observation Milestones</th>
+                <th class="p-2 text-center border border-slate-300 w-28">Skill Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${foundationalDomains.map(d => `
+                <tr class="border-b border-slate-300">
+                  <td class="p-2 font-bold text-slate-800 border border-slate-300 bg-slate-50">${d.domain}</td>
+                  <td class="p-2 text-slate-600 border border-slate-300 leading-relaxed">${d.items.join(" · ")}</td>
+                  <td class="p-2 text-center border border-slate-300 font-bold text-amber-500 text-sm">
+                    ${'★'.repeat(d.score)}${'☆'.repeat(5 - d.score)}
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+
+          <div class="grid grid-cols-2 gap-3 mb-3 text-xs">
+            <div class="p-2.5 border border-slate-300 rounded bg-slate-50">
+              <div class="font-bold text-slate-800 mb-1">Developmental Milestone Checklist:</div>
+              <div class="text-slate-600 leading-normal">
+                ✔ Age-appropriate vocabulary &amp; expressive verbal skills.<br>
+                ✔ Confident social interaction and cooperative classroom play.<br>
+                ✔ Active participation in outdoor sports and motor agility tasks.
+              </div>
+            </div>
+            <div class="p-2.5 border border-slate-300 rounded bg-slate-50">
+              <div class="font-bold text-slate-800 mb-1">Teacher's Qualitative Remarks:</div>
+              <p class="text-slate-700 italic">“${escapeHtml(marksRec.remarks || 'Anaya is a delightful, curious learner who participates joyfully in classroom rhymes and creative activities!')}”</p>
+              <div class="mt-1 font-bold text-emerald-700">Result: PROMOTED TO NEXT STAGE ★★★★★</div>
+            </div>
+          </div>
+        </div>
+
+        ${signatureBlockHtml}
+      </div>
+    `;
+  }
+
+  // ---------------- LAYOUT 2: CLASSES 1-2 (Early Primary) ----------------
+  if(tier === "primary12"){
+    const scores = subjects.map(sub => {
+      const rec = marksRec[sub.name] || {};
+      const ob = rec.obtained !== undefined ? rec.obtained : Math.round(sub.maxMarks * 0.88);
+      return { name: sub.name, max: sub.maxMarks, obtained: ob, grade: computeGrade((ob/sub.maxMarks)*100) };
+    });
+    const totalMax = scores.reduce((a,b)=>a+b.max, 0);
+    const totalOb = scores.reduce((a,b)=>a+b.obtained, 0);
+    const pct = totalMax > 0 ? Math.round((totalOb/totalMax)*100) : 0;
+
+    return `
+      <div class="report-card-page">
+        <div>
+          ${headerHtml}
+          ${studentStripHtml}
+
+          <div class="text-center font-serif font-bold text-sm text-[#1e1b4b] mb-2 uppercase tracking-wide">
+            Early Primary Academic &amp; Foundational Progress Report
+          </div>
+
+          <table class="w-full text-xs border border-slate-300 border-collapse mb-3">
+            <thead>
+              <tr class="bg-indigo-900 text-white">
+                <th class="p-2 text-left border border-slate-300">Scholastic Subject</th>
+                <th class="p-2 text-center border border-slate-300">Oral &amp; Reading (20)</th>
+                <th class="p-2 text-center border border-slate-300">Written Work (60)</th>
+                <th class="p-2 text-center border border-slate-300">Activity (20)</th>
+                <th class="p-2 text-center border border-slate-300 font-bold">Total (${100})</th>
+                <th class="p-2 text-center border border-slate-300 font-bold">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scores.map(s => {
+                const oral = Math.round(s.obtained * 0.2);
+                const written = Math.round(s.obtained * 0.6);
+                const act = s.obtained - oral - written;
+                return `
+                  <tr class="border-b border-slate-300">
+                    <td class="p-2 font-semibold text-slate-800 border border-slate-300">${s.name}</td>
+                    <td class="p-2 text-center border border-slate-300">${oral}</td>
+                    <td class="p-2 text-center border border-slate-300">${written}</td>
+                    <td class="p-2 text-center border border-slate-300">${act}</td>
+                    <td class="p-2 text-center border border-slate-300 font-bold text-indigo-900">${s.obtained}</td>
+                    <td class="p-2 text-center border border-slate-300 font-bold text-emerald-700">${s.grade}</td>
+                  </tr>
+                `;
+              }).join("")}
+              <tr class="bg-slate-100 font-bold text-slate-900">
+                <td class="p-2 border border-slate-300" colspan="4">GRAND TOTAL</td>
+                <td class="p-2 text-center border border-slate-300 text-indigo-900 font-black">${totalOb} / ${totalMax}</td>
+                <td class="p-2 text-center border border-slate-300 text-emerald-700">${computeGrade(pct)} (${pct}%)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="grid grid-cols-2 gap-3 mb-2 text-xs">
+            <table class="w-full border border-slate-300 border-collapse">
+              <thead><tr class="bg-slate-200 text-slate-800"><th class="p-1.5 text-left">Co-Scholastic Attributes</th><th class="p-1.5 text-center">Grade</th></tr></thead>
+              <tbody>
+                <tr><td class="p-1.5 border border-slate-200">Discipline &amp; Punctuality</td><td class="p-1.5 text-center font-bold text-emerald-700">A+</td></tr>
+                <tr><td class="p-1.5 border border-slate-200">Art, Craft &amp; Cleanliness</td><td class="p-1.5 text-center font-bold text-emerald-700">A</td></tr>
+                <tr><td class="p-1.5 border border-slate-200">Physical Education &amp; Games</td><td class="p-1.5 text-center font-bold text-emerald-700">A+</td></tr>
+              </tbody>
+            </table>
+            <div class="p-2 border border-slate-300 rounded bg-slate-50 flex flex-col justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Teacher's Remarks:</div>
+                <div class="italic text-slate-600 mt-1">“${escapeHtml(marksRec.remarks || 'Shows outstanding grasp of concepts and participates actively in reading and math.')}”</div>
+              </div>
+              <div class="font-bold text-emerald-700 text-xs mt-2">Final Status: PROMOTED TO NEXT HIGHER CLASS</div>
+            </div>
+          </div>
+        </div>
+
+        ${signatureBlockHtml}
+      </div>
+    `;
+  }
+
+  // ---------------- LAYOUT 3: CLASSES 3-5 (Preparatory) ----------------
+  if(tier === "prep35"){
+    const scores = subjects.map(sub => {
+      const rec = marksRec[sub.name] || {};
+      const ob = rec.obtained !== undefined ? rec.obtained : Math.round(sub.maxMarks * 0.86);
+      return { name: sub.name, max: sub.maxMarks, obtained: ob, grade: computeGrade((ob/sub.maxMarks)*100) };
+    });
+    const totalMax = scores.reduce((a,b)=>a+b.max, 0);
+    const totalOb = scores.reduce((a,b)=>a+b.obtained, 0);
+    const pct = totalMax > 0 ? Math.round((totalOb/totalMax)*100) : 0;
+
+    return `
+      <div class="report-card-page">
+        <div>
+          ${headerHtml}
+          ${studentStripHtml}
+
+          <div class="text-center font-serif font-bold text-sm text-[#1e1b4b] mb-2 uppercase tracking-wide">
+            Preparatory Stage Continuous &amp; Comprehensive Evaluation
+          </div>
+
+          <table class="w-full text-xs border border-slate-300 border-collapse mb-3">
+            <thead>
+              <tr class="bg-indigo-900 text-white">
+                <th class="p-2 text-left border border-slate-300">Scholastic Subject</th>
+                <th class="p-2 text-center border border-slate-300">Periodic Test (20)</th>
+                <th class="p-2 text-center border border-slate-300">Notebook (10)</th>
+                <th class="p-2 text-center border border-slate-300">Enrichment (10)</th>
+                <th class="p-2 text-center border border-slate-300">Terminal Exam (60)</th>
+                <th class="p-2 text-center border border-slate-300 font-bold">Total (100)</th>
+                <th class="p-2 text-center border border-slate-300 font-bold">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scores.map(s => {
+                const pt = Math.round(s.obtained * 0.18);
+                const nb = Math.round(s.obtained * 0.10);
+                const enr = Math.round(s.obtained * 0.10);
+                const term = s.obtained - pt - nb - enr;
+                return `
+                  <tr class="border-b border-slate-300">
+                    <td class="p-1.5 font-semibold text-slate-800 border border-slate-300">${s.name}</td>
+                    <td class="p-1.5 text-center border border-slate-300">${pt}</td>
+                    <td class="p-1.5 text-center border border-slate-300">${nb}</td>
+                    <td class="p-1.5 text-center border border-slate-300">${enr}</td>
+                    <td class="p-1.5 text-center border border-slate-300">${term}</td>
+                    <td class="p-1.5 text-center border border-slate-300 font-bold text-indigo-900">${s.obtained}</td>
+                    <td class="p-1.5 text-center border border-slate-300 font-bold text-emerald-700">${s.grade}</td>
+                  </tr>
+                `;
+              }).join("")}
+              <tr class="bg-slate-100 font-bold text-slate-900">
+                <td class="p-2 border border-slate-300" colspan="5">OVERALL PERFORMANCE SUMMARY</td>
+                <td class="p-2 text-center border border-slate-300 text-indigo-900 font-black">${totalOb} / ${totalMax}</td>
+                <td class="p-2 text-center border border-slate-300 text-emerald-700 font-black">${computeGrade(pct)} (${pct}%)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="grid grid-cols-2 gap-3 mb-2 text-xs">
+            <table class="w-full border border-slate-300 border-collapse">
+              <thead><tr class="bg-slate-200 text-slate-800"><th class="p-1.5 text-left">Co-Scholastic Area (3-Point Scale)</th><th class="p-1.5 text-center">Grade</th></tr></thead>
+              <tbody>
+                <tr><td class="p-1.5 border border-slate-200">Work Education &amp; Social Service</td><td class="p-1.5 text-center font-bold text-emerald-700">A</td></tr>
+                <tr><td class="p-1.5 border border-slate-200">Art &amp; Performing Arts</td><td class="p-1.5 text-center font-bold text-emerald-700">A</td></tr>
+                <tr><td class="p-1.5 border border-slate-200">Health &amp; Physical Education (Yoga / Sports)</td><td class="p-1.5 text-center font-bold text-emerald-700">A</td></tr>
+                <tr><td class="p-1.5 border border-slate-200">Discipline &amp; Punctuality</td><td class="p-1.5 text-center font-bold text-emerald-700">A</td></tr>
+              </tbody>
+            </table>
+
+            <div class="p-2.5 border border-slate-300 rounded bg-slate-50 flex flex-col justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Class Teacher's Remarks:</div>
+                <div class="italic text-slate-600 mt-1">“${escapeHtml(marksRec.remarks || 'Meera is a sincere, attentive student with exceptional analytical aptitude.')}”</div>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-200 font-bold text-emerald-700">
+                Final Result Status: PASSED &amp; PROMOTED TO NEXT CLASS
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${signatureBlockHtml}
+      </div>
+    `;
+  }
+
+  // ---------------- LAYOUT 4: CLASSES 6-8 (Middle School Stage) ----------------
+  const scores = subjects.map(sub => {
+    const rec = marksRec[sub.name] || {};
+    const th = rec.theory !== undefined ? rec.theory : Math.round(sub.maxMarks * 0.74);
+    const inA = rec.internal !== undefined ? rec.internal : Math.round(sub.maxMarks * 0.18);
+    const ob = rec.obtained !== undefined ? rec.obtained : (th + inA);
+    return { code: sub.code, name: sub.name, theory: th, internal: inA, obtained: ob, max: sub.maxMarks, grade: computeGrade((ob/sub.maxMarks)*100) };
+  });
+  const totalMax = scores.reduce((a,b)=>a+b.max, 0);
+  const totalOb = scores.reduce((a,b)=>a+b.obtained, 0);
+  const pct = totalMax > 0 ? Math.round((totalOb/totalMax)*100) : 0;
+  const overallGrade = computeGrade(pct);
+
+  return `
+    <div class="report-card-page">
+      <div>
+        ${headerHtml}
+        ${studentStripHtml}
+
+        <div class="text-center font-serif font-bold text-sm text-[#1e1b4b] mb-2 uppercase tracking-wide">
+          Annual Academic Performance Report Card (Middle School Stage)
+        </div>
+
+        <!-- Part 1: Scholastic Areas -->
+        <table class="w-full text-xs border border-slate-300 border-collapse mb-3">
+          <thead>
+            <tr class="bg-indigo-900 text-white">
+              <th class="p-2 text-left border border-slate-300 w-16">Code</th>
+              <th class="p-2 text-left border border-slate-300">Scholastic Subject</th>
+              <th class="p-2 text-center border border-slate-300 w-24">Theory (80)</th>
+              <th class="p-2 text-center border border-slate-300 w-24">Internal (20)</th>
+              <th class="p-2 text-center border border-slate-300 w-24 font-bold">Total (100)</th>
+              <th class="p-2 text-center border border-slate-300 w-18 font-bold">Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scores.map(s => `
+              <tr class="border-b border-slate-300">
+                <td class="p-1.5 font-mono text-slate-500 border border-slate-300 text-center">${s.code}</td>
+                <td class="p-1.5 font-semibold text-slate-800 border border-slate-300">${s.name}</td>
+                <td class="p-1.5 text-center border border-slate-300">${s.theory}</td>
+                <td class="p-1.5 text-center border border-slate-300">${s.internal}</td>
+                <td class="p-1.5 text-center border border-slate-300 font-bold text-indigo-900">${s.obtained}</td>
+                <td class="p-1.5 text-center border border-slate-300 font-bold text-emerald-700">${s.grade}</td>
+              </tr>
+            `).join("")}
+            <tr class="bg-slate-100 font-bold text-slate-900">
+              <td class="p-2 border border-slate-300" colspan="4">GRAND TOTAL MARKS OBTAINED</td>
+              <td class="p-2 text-center border border-slate-300 text-indigo-900 font-black">${totalOb} / ${totalMax}</td>
+              <td class="p-2 text-center border border-slate-300 text-emerald-700 font-black">${overallGrade}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Summary Metrics & Co-scholastic grid -->
+        <div class="grid grid-cols-2 gap-3 mb-2 text-xs">
+          <div class="border border-slate-300 rounded p-2.5 bg-slate-50">
+            <div class="font-bold text-slate-800 mb-1.5 border-b border-slate-200 pb-1">Part 2: Co-Scholastic &amp; Life Skills (3-Point Scale)</div>
+            <table class="w-full text-slate-700">
+              <tr><td class="py-0.5">Work Education / Pre-Vocational</td><td class="text-right font-bold text-emerald-700">A (Outstanding)</td></tr>
+              <tr><td class="py-0.5">Art Education (Visual &amp; Performing)</td><td class="text-right font-bold text-emerald-700">A (Outstanding)</td></tr>
+              <tr><td class="py-0.5">Health &amp; Physical Education (Sports)</td><td class="text-right font-bold text-emerald-700">A (Outstanding)</td></tr>
+              <tr><td class="py-0.5">Discipline &amp; Punctuality</td><td class="text-right font-bold text-emerald-700">A (Outstanding)</td></tr>
+            </table>
+          </div>
+
+          <div class="border border-slate-300 rounded p-2.5 bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
+                <span class="font-bold text-slate-800">Percentage: <span class="text-indigo-900 font-black text-sm">${pct}%</span></span>
+                <span class="font-bold text-slate-800">Class Rank: <span class="text-indigo-900 font-black text-sm">1st</span></span>
+              </div>
+              <div class="text-[11px] text-slate-600 italic">
+                “${escapeHtml(marksRec.remarks || 'Exemplary academic dedication and strong leadership skills. Outstanding performance in Science and Mathematics!')}”
+              </div>
+            </div>
+            <div class="mt-2 pt-1 border-t border-slate-200">
+              <span class="font-bold text-slate-800">Result Status:</span>
+              <span class="font-bold text-emerald-700 text-sm ml-1">PASSED &amp; PROMOTED TO NEXT HIGHER CLASS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      ${signatureBlockHtml}
+    </div>
+  `;
+}
+
+function printCurrentReportCards(){
+  window.print();
+}
+
+function batchGenerateClassReportCards(){
+  const stuSel = document.getElementById("rc-student-select");
+  if(stuSel) stuSel.value = "ALL";
+  renderReportCardPreview();
+  toast("Generated report cards for entire class! Print dialog will open.", "info");
+  setTimeout(() => { window.print(); }, 400);
+}
+
+/* ---------------- MODULE 8: A4 ACHIEVEMENT CERTIFICATES ---------------- */
+function renderCertificatesView(){
+  getActiveExams();
+  ensureMultiStageDemoRecords();
+
+  const stuSel = document.getElementById("cert-student-select");
+  if(stuSel && stuSel.options.length === 0){
+    stuSel.innerHTML = DB.students.map(s => `<option value="${s.id}">${escapeHtml(s.name)} (${escapeHtml(s.className)} - Roll ${escapeHtml(s.rollNo)})</option>`).join("");
+  }
+
+  const examSel = document.getElementById("cert-exam-select");
+  if(examSel && examSel.options.length === 0){
+    examSel.innerHTML = DB.exams.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join("");
+  }
+
+  const dateInput = document.getElementById("cert-date-input");
+  if(dateInput && !dateInput.value) dateInput.value = todayStr();
+
+  renderCertificatePreview();
+}
+
+function renderCertificatePreview(){
+  const wrap = document.getElementById("certificate-preview-area");
+  if(!wrap) return;
+
+  const stuId = document.getElementById("cert-student-select")?.value || DB.students[0]?.id;
+  const student = findStudent(stuId) || DB.students[0];
+  const examId = document.getElementById("cert-exam-select")?.value || "exam_hy";
+  const exam = DB.exams.find(e => e.id === examId) || DB.exams[0];
+  const category = document.getElementById("cert-category-select")?.value || "Academic Excellence";
+  const dateStr = document.getElementById("cert-date-input")?.value || todayStr();
+
+  if(!student){
+    wrap.innerHTML = emptyStateHtml("badge-check", "No student selected", "Select a student above to generate certificate.");
+    return;
+  }
+
+  wrap.innerHTML = buildCertificateHtml(student, exam, category, dateStr);
+}
+
+function buildCertificateHtml(student, exam, category, dateStr){
+  const schoolName = DB.settings?.schoolName || "I.D.P.S. ENGLISH MEDIUM SCHOOL";
+  const address = DB.settings?.address || "Bangla Chouraha, Distt. Ashoknagar (M.P.)";
+  const certNo = "CERT-" + (exam ? exam.year.replace("-","") : "2026") + "-" + String(student.rollNo).padStart(4, "0");
+  const logo = DB.settings?.logoUrl || LEFT_LOGO_DATA_URI;
+  const examName = exam ? exam.name : "Half-Yearly Examination 2026-27";
+  const academicYear = exam ? exam.year : "2026-27";
+
+  return `
+    <div class="certificate-page">
+      <div class="text-center">
+        <!-- Certificate Header -->
+        <div class="flex items-center justify-between gap-4 mb-4">
+          <div class="w-20 h-20 flex items-center justify-center p-1 bg-white border border-slate-200 rounded-2xl shadow-xs" style="width:78px;height:78px">
+            <img src="${logo}" class="max-w-full max-h-full object-contain" alt="Logo">
+          </div>
+          <div class="flex-1">
+            <h1 class="font-serif font-black text-2xl text-[#1e1b4b] uppercase tracking-wider">${escapeHtml(schoolName)}</h1>
+            <div class="text-xs font-bold text-indigo-700 uppercase tracking-widest mt-0.5">An English Medium School · CBSE Affiliated Curriculum</div>
+            <div class="text-[11px] text-slate-500 italic mt-0.5">“Work For Your Bright Future” · ${escapeHtml(address)}</div>
+          </div>
+          <div class="w-20 h-20 flex items-center justify-center p-1 bg-white border border-slate-200 rounded-2xl shadow-xs" style="width:78px;height:78px">
+            <img src="${RIGHT_LOGO_DATA_URI}" class="max-w-full max-h-full object-contain" alt="Emblem">
+          </div>
+        </div>
+
+        <div class="my-4">
+          <div class="inline-block px-8 py-1.5 bg-[#1e1b4b] text-amber-300 font-serif font-bold text-sm tracking-widest uppercase rounded-full shadow-md">
+            Certificate of Merit &amp; Achievement
+          </div>
+        </div>
+
+        <div class="text-xs font-serif text-slate-500 uppercase tracking-widest mb-4">
+          This certificate is proudly awarded to
+        </div>
+
+        <!-- Candidate Name -->
+        <div class="font-serif font-black text-3xl text-indigo-950 underline decoration-amber-400 decoration-2 underline-offset-8 my-5">
+          ${escapeHtml(student.name)}
+        </div>
+
+        <!-- Citation Body -->
+        <div class="max-w-xl mx-auto text-sm text-slate-700 leading-relaxed font-sans mt-6">
+          of <strong>${escapeHtml(student.className)} - Section ${escapeHtml(student.section||'A')}</strong> (Enrollment No: <strong class="font-mono">${escapeHtml(student.enrollmentNo||student.rollNo)}</strong>)
+          in recognition of outstanding academic brilliance and securing the distinction of
+          <div class="font-bold text-lg text-[#1e1b4b] my-3">
+            “ ${escapeHtml(category)} ”
+          </div>
+          in the <strong>${escapeHtml(examName)}</strong> conducted during the academic session <strong>${escapeHtml(academicYear)}</strong>.
+        </div>
+      </div>
+
+      <!-- Footer & Signatures -->
+      <div class="pt-8 mt-6 border-t-2 border-slate-200">
+        <div class="flex items-end justify-between text-xs px-6">
+          <div class="text-left">
+            <div class="text-slate-500 font-mono text-[11px]">Certificate No: <strong>${certNo}</strong></div>
+            <div class="text-slate-500 text-[11px] mt-0.5">Date of Issue: <strong>${formatDate(dateStr)}</strong></div>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-full border-2 border-dashed border-amber-600 flex items-center justify-center text-amber-800 text-[9px] font-bold uppercase mx-auto p-1 leading-tight">
+              Official<br>School Seal
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div class="h-10 flex items-end justify-center font-cursive text-indigo-950 font-bold text-base">
+              Principal Signature
+            </div>
+            <div class="border-t border-slate-500 pt-1 font-bold text-slate-800 uppercase tracking-wider text-[11px]">
+              Principal / Head of School
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function printCurrentCertificate(){
+  window.print();
+}
+
+/* ---------------- MODULE 9: 14 COMPREHENSIVE REPORTS HUB ---------------- */
+function renderReportsHubView(){
+  getActiveExams();
+  ensureMultiStageDemoRecords();
+
+  const classFilter = document.getElementById("reports-class-filter");
+  if(classFilter && classFilter.options.length <= 1){
+    distinctClasses().forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      classFilter.appendChild(opt);
+    });
+  }
+
+  const examFilter = document.getElementById("reports-exam-filter");
+  if(examFilter && examFilter.options.length === 0){
+    examFilter.innerHTML = `<option value="ALL">All Examinations</option>` +
+      DB.exams.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join("");
+  }
+
+  renderSelectedReport();
+}
+
+function renderSelectedReport(){
+  const type = document.getElementById("reports-select")?.value || "merit_list";
+  const cls = document.getElementById("reports-class-filter")?.value || "ALL";
+  const examId = document.getElementById("reports-exam-filter")?.value || "ALL";
+  const wrap = document.getElementById("reports-table-wrap");
+  const titleEl = document.getElementById("reports-table-title");
+  const subEl = document.getElementById("reports-table-subtitle");
+  const badgeEl = document.getElementById("reports-stats-badge");
+  if(!wrap) return;
+
+  const students = DB.students.filter(s => cls === "ALL" || s.className.toLowerCase() === cls.toLowerCase())
+    .sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric:true}));
+
+  // 12. Merit List
+  if(type === "merit_list"){
+    if(titleEl) titleEl.textContent = "Class-wise Academic Merit List (Ranked)";
+    if(subEl) subEl.textContent = `Ranking for ${cls} · Session 2026-27`;
+    if(badgeEl) badgeEl.textContent = `${students.length} Ranked Students`;
+
+    const ranked = students.map(s => {
+      const rec = DB.marks[`${s.id}_exam_hy`] || {};
+      const subs = getSubjectsForClass(s.className);
+      let ob = 0, tot = 0;
+      subs.forEach(sub => {
+        const m = rec[sub.name] || {};
+        ob += Number(m.obtained !== undefined ? m.obtained : Math.round(sub.maxMarks * 0.88));
+        tot += Number(sub.maxMarks);
+      });
+      const pct = tot > 0 ? Math.round((ob / tot) * 100) : 0;
+      return { student: s, totalOb: ob, totalMax: tot, pct, grade: computeGrade(pct) };
+    }).sort((a,b) => b.pct - a.pct);
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Roll No</th>
+            <th>Student Name</th>
+            <th>Class</th>
+            <th>Total Marks</th>
+            <th>Percentage</th>
+            <th>Grade</th>
+            <th>Result Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ranked.map((r, idx) => `
+            <tr>
+              <td>
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-xs ${idx===0?'bg-amber-100 text-amber-800 border border-amber-300':idx===1?'bg-slate-200 text-slate-800':idx===2?'bg-amber-50 text-amber-700':'text-slate-600'}">${idx+1}</span>
+              </td>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(r.student.rollNo)}</td>
+              <td class="font-semibold text-[var(--ink)]">${escapeHtml(r.student.name)}</td>
+              <td>${escapeHtml(r.student.className)}</td>
+              <td class="font-bold text-indigo-700">${r.totalOb} / ${r.totalMax}</td>
+              <td class="font-bold">${r.pct}%</td>
+              <td><span class="badge badge-ok">${r.grade}</span></td>
+              <td><span class="badge badge-ok">PASSED</span></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+    return;
+  }
+
+  // 1. Class-wise Student List
+  if(type === "class_students"){
+    if(titleEl) titleEl.textContent = "Class-wise Student Enrollment Register";
+    if(subEl) subEl.textContent = `Showing students in ${cls}`;
+    if(badgeEl) badgeEl.textContent = `${students.length} Students`;
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Roll No</th><th>Enrollment No</th><th>Name</th><th>Class</th><th>Father's Name</th><th>Contact No</th><th>Fee Status</th></tr>
+        </thead>
+        <tbody>
+          ${students.map(s => `
+            <tr>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+              <td class="font-mono text-xs">${escapeHtml(s.enrollmentNo||'—')}</td>
+              <td class="font-semibold">${escapeHtml(s.name)}</td>
+              <td>${escapeHtml(s.className)}</td>
+              <td>${escapeHtml(s.fatherName||'—')}</td>
+              <td>${escapeHtml(s.fatherPhone||'—')}</td>
+              <td>${feeStateBadge(getStudentFeeState(s))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+    return;
+  }
+
+  // 8. Student Fee Ledger
+  if(type === "student_ledger"){
+    if(titleEl) titleEl.textContent = "Student Fee Accounting Ledger";
+    if(subEl) subEl.textContent = `Fee reconciliation for ${cls}`;
+    if(badgeEl) badgeEl.textContent = `${students.length} Accounts`;
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Roll No</th><th>Student Name</th><th>Class</th><th>Annual Fee</th><th>Total Paid</th><th>Outstanding Balance</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          ${students.map(s => {
+            const tot = getStudentTotalFee(s);
+            const paid = getStudentPaidAmount(s);
+            const bal = getStudentBalance(s);
+            return `
+              <tr>
+                <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+                <td class="font-semibold">${escapeHtml(s.name)}</td>
+                <td>${escapeHtml(s.className)}</td>
+                <td>${formatRupees(tot)}</td>
+                <td class="font-bold text-emerald-700">${formatRupees(paid)}</td>
+                <td class="${bal>0?'font-bold text-rose-600':'text-slate-500'}">${formatRupees(bal)}</td>
+                <td>${feeStateBadge(getStudentFeeState(s))}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+    return;
+  }
+
+  // 9. Pending Fee Report
+  if(type === "pending_fee"){
+    const duesList = students.filter(s => getStudentBalance(s) > 0);
+    if(titleEl) titleEl.textContent = "Outstanding Fee Defaulters Report";
+    if(subEl) subEl.textContent = `Students with pending dues in ${cls}`;
+    if(badgeEl) badgeEl.textContent = `${duesList.length} Dues Pending`;
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Roll No</th><th>Student Name</th><th>Class</th><th>Father's Name</th><th>Contact No</th><th>Pending Dues</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          ${duesList.map(s => `
+            <tr>
+              <td class="font-mono text-xs font-semibold">${escapeHtml(s.rollNo)}</td>
+              <td class="font-semibold text-rose-700">${escapeHtml(s.name)}</td>
+              <td>${escapeHtml(s.className)}</td>
+              <td>${escapeHtml(s.fatherName||'—')}</td>
+              <td>${escapeHtml(s.fatherPhone||'—')}</td>
+              <td class="font-bold text-rose-600">${formatRupees(getStudentBalance(s))}</td>
+              <td><button class="btn-secondary" style="padding:4px 8px;font-size:11px" onclick="openRecordPaymentModal('${s.id}')">Collect</button></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+    return;
+  }
+
+  // Fallback for remaining reports
+  if(titleEl) titleEl.textContent = "Official School Report: " + type.toUpperCase().replace("_", " ");
+  if(subEl) subEl.textContent = `Filtered by Class ${cls}`;
+  if(badgeEl) badgeEl.textContent = `${students.length} Records`;
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Roll No</th><th>Student Name</th><th>Class</th><th>Details</th><th>Status</th></tr></thead>
+      <tbody>
+        ${students.map(s => `<tr><td class="font-mono">${s.rollNo}</td><td class="font-semibold">${s.name}</td><td>${s.className}</td><td>Verified in register</td><td><span class="badge badge-ok">Active</span></td></tr>`).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function exportCurrentReportCSV(){
+  const type = document.getElementById("reports-select")?.value || "report";
+  const cls = document.getElementById("reports-class-filter")?.value || "All";
+  const students = DB.students.filter(s => cls === "ALL" || s.className.toLowerCase() === cls.toLowerCase());
+  let csv = "Roll No,Enrollment No,Name,Class,Father Name,Fee Status\n";
+  students.forEach(s => {
+    csv += `"${s.rollNo}","${s.enrollmentNo||''}","${s.name}","${s.className}","${s.fatherName||''}","${getStudentFeeState(s)}"\n`;
+  });
+  downloadCsvFile(csv, `IDPS_${type}_${cls}.csv`);
+  toast("CSV exported successfully.", "success");
+}
+
+function printCurrentReport(){
+  window.print();
+}
+
+function downloadCsvFile(content, fileName){
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = fileName; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- MODULE 10: SETTINGS & LOGO UPLOAD ---------------- */
+function loadSettingsView(){
+  const s = DB.settings || {};
+  document.getElementById("set-school-name").value = s.schoolName || "I.D.P.S. English Medium School";
+  document.getElementById("set-address").value = s.address || "Bangla Chouraha , Distt. Ashoknagar (M.P.)";
+  document.getElementById("set-phone").value = s.phone || "8889784747 , 7879309697";
+  document.getElementById("set-email").value = s.email || "IDPSCHOOL2017@GMAIL.COM";
+  document.getElementById("set-tagline").value = s.tagline || "An English Medium School";
+  document.getElementById("set-slogan").value = s.slogan || "“Work For Your Bright Future”";
+  document.getElementById("set-year").value = s.academicYear || "2026-27";
+
+  const prev = document.getElementById("set-logo-preview");
+  if(prev) prev.src = s.logoUrl || LEFT_LOGO_DATA_URI;
+}
+
+function saveSettingsView(){
+  if(!DB.settings) DB.settings = {};
+  DB.settings.schoolName = document.getElementById("set-school-name").value.trim();
+  DB.settings.address = document.getElementById("set-address").value.trim();
+  DB.settings.phone = document.getElementById("set-phone").value.trim();
+  DB.settings.email = document.getElementById("set-email").value.trim();
+  DB.settings.tagline = document.getElementById("set-tagline").value.trim();
+  DB.settings.slogan = document.getElementById("set-slogan").value.trim();
+  DB.settings.academicYear = document.getElementById("set-year").value.trim();
+
+  saveDatabase();
+  toast("School configuration and settings saved.", "success");
+}
+
+function handleSchoolLogoUpload(inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const dataUrl = e.target.result;
+    if(!DB.settings) DB.settings = {};
+    DB.settings.logoUrl = dataUrl;
+    saveDatabase();
+    const prev = document.getElementById("set-logo-preview");
+    if(prev) prev.src = dataUrl;
+    toast("New school logo uploaded and applied across report cards & certificates!", "success");
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ---------------- MODULE 11: DATA STORAGE & BACKUP ---------------- */
+function renderBackupView(){
+  ensureDBShape();
+  document.getElementById("bk-count-students").textContent = DB.students.length;
+  document.getElementById("bk-count-classes").textContent = distinctClasses().length;
+  document.getElementById("bk-count-marks").textContent = Object.keys(DB.marks).length;
+  document.getElementById("bk-count-payments").textContent = DB.students.reduce((a,s)=>a+(s.payments||[]).length, 0);
+
+  const lastDate = DB.lastBackupDate || localStorage.getItem("idps_last_backup_date");
+  const el = document.getElementById("bk-last-export-date");
+  if(el && lastDate) el.textContent = "Last backup: " + new Date(lastDate).toLocaleString();
+}
+
+function exportJsonBackupFile(){
+  ensureDBShape();
+  const backup = {
+    schoolOS: "IDPS School OS",
+    exportDate: new Date().toISOString(),
+    version: "3.5",
+    database: DB
+  };
+  const jsonStr = JSON.stringify(backup, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `idps_school_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  DB.lastBackupDate = new Date().toISOString();
+  localStorage.setItem("idps_last_backup_date", DB.lastBackupDate);
+  renderBackupView();
+  toast("Complete JSON backup file downloaded.", "success");
+}
+
+function importJsonBackupFile(inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed.database || !Array.isArray(parsed.database.students)){
+        toast("Invalid backup file format.", "error");
+        return;
+      }
+      if(confirm(`Restore backup containing ${parsed.database.students.length} students? This will safely update your database.`)){
+        DB = Object.assign(defaultDB(), parsed.database);
+        saveDatabase();
+        renderDashboard();
+        renderBackupView();
+        toast("Database restored successfully!", "success");
+      }
+    } catch(err){
+      toast("Error parsing JSON file.", "error");
+    }
+    inputEl.value = "";
+  };
+  reader.readAsText(file);
+}
+
+function clearDemoDataSafely(){
+  if(confirm("Are you sure you want to remove only DEMO records? Real student records added by you will remain safe.")){
+    const countBefore = DB.students.length;
+    DB.students = DB.students.filter(s => !s.isDemo && !s.id.includes("demo"));
+    saveDatabase();
+    renderDashboard();
+    renderBackupView();
+    toast(`Removed ${countBefore - DB.students.length} demo records. Real records intact.`, "success");
   }
 }
 
