@@ -3479,3 +3479,236 @@ function setupLocalStoragePersistence(){
     localStorage.setItem("idps_school_db", JSON.stringify(DB));
   }
 }
+
+/* ---------------- CORE APPLICATION SHELL & NAVIGATION ---------------- */
+
+function showAppScreen(user){
+  const authScreen = document.getElementById("auth-screen");
+  const app = document.getElementById("app");
+  if(authScreen){
+    authScreen.classList.add("hidden");
+    authScreen.style.display = "none";
+  }
+  if(app){
+    app.classList.remove("hidden");
+    app.style.display = "flex";
+  }
+
+  if(user){
+    window.__currentUser = user;
+    window.__currentUserFirstName = user.displayName ? user.displayName.split(" ")[0] : "Admin";
+    const nameEl = document.getElementById("user-name");
+    const emailEl = document.getElementById("user-email");
+    const avatarEl = document.getElementById("user-avatar");
+    if(nameEl) nameEl.textContent = user.displayName || "Administrator";
+    if(emailEl) emailEl.textContent = user.email || "admin@idps-school.edu";
+    if(avatarEl){
+      if(user.photoURL){
+        avatarEl.src = user.photoURL;
+        avatarEl.classList.remove("hidden");
+      } else {
+        avatarEl.classList.add("hidden");
+      }
+    }
+  }
+
+  const schoolIdEl = document.getElementById("school-id-display");
+  if(schoolIdEl && !schoolIdEl.value){
+    schoolIdEl.value = (user && user.uid) ? user.uid : "IDPS-SCHOOL-LOCAL";
+  }
+
+  const headerDate = document.getElementById("header-date");
+  if(headerDate){
+    const now = new Date();
+    headerDate.textContent = now.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
+  }
+
+  navigate("dashboard");
+  animateAppShell();
+  safeIcons();
+}
+
+function navigate(view){
+  window.__currentView = view;
+  document.querySelectorAll(".view").forEach(el => {
+    el.classList.remove("active");
+    el.style.display = "none";
+  });
+
+  const target = document.getElementById("view-" + view);
+  if(target){
+    target.classList.add("active");
+    target.style.display = "block";
+  }
+
+  document.querySelectorAll("#sidebar .nav-item").forEach(item => {
+    if(item.dataset.view === view){
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  const titles = {
+    dashboard: { title: "Dashboard", sub: "Overview of school operations" },
+    admissions: { title: "Admissions", sub: "Direct Student Admission Portal" },
+    students: { title: "Students", sub: "Student Database & Excel Roster" },
+    fees: { title: "Fees", sub: "Fee Structure, Collection & Receipts" },
+    parent: { title: "Parent Portal", sub: "Attendance Register & School Notices" },
+    timetable: { title: "Timetable Hub", sub: "Examination Schedules & Datesheets" },
+    admitcard: { title: "Admit Card Engine", sub: "Fee-gated Examination Hall Tickets" },
+    marksheet: { title: "Marksheet Generator", sub: "Academic Progress & Report Cards" },
+    tc: { title: "Transfer Certificate", sub: "Official School Leaving Certificates" },
+    content: { title: "Academics Content", sub: "Homework, Notes & Syllabus" },
+    directory: { title: "Directory", sub: "Teachers, Classmates & Contacts" },
+    resources: { title: "Resources", sub: "Photo Gallery, Live Classes & Bus Routes" },
+    requests: { title: "Parent Requests", sub: "Complaints, Feedback & Leave Requests" },
+    settings: { title: "Settings", sub: "Cloud, AI & School Configuration" }
+  };
+
+  const pageTitle = document.getElementById("page-title");
+  const pageSub = document.getElementById("page-subtitle");
+  if(titles[view]){
+    if(pageTitle) pageTitle.textContent = titles[view].title;
+    if(pageSub) pageSub.textContent = titles[view].sub;
+  }
+
+  if(view === "dashboard"){ renderDashboard(); }
+  else if(view === "students"){ renderStudentTable(); }
+  else if(view === "fees"){ renderFeeTable(); }
+  else if(view === "timetable"){ populateClassList(); renderTimetablePreview(); }
+  else if(view === "parent"){ switchParentTab("overview"); }
+  else if(view === "content"){ renderBoardPanel("homework"); }
+  else if(view === "directory"){ renderBoardPanel("teacher"); }
+  else if(view === "resources"){ renderBoardPanel("gallery"); }
+  else if(view === "requests"){ renderRequestsPanel("complaint"); }
+  else if(view === "settings"){ populateAiSettingsForm(); }
+
+  animateViewEnter(view);
+  safeIcons();
+  closeSidebar();
+}
+
+function openSidebar(){
+  const sb = document.getElementById("sidebar");
+  const mo = document.getElementById("mobile-overlay");
+  if(sb) sb.classList.add("open");
+  if(mo) mo.classList.remove("hidden");
+}
+
+function closeSidebar(){
+  const sb = document.getElementById("sidebar");
+  const mo = document.getElementById("mobile-overlay");
+  if(sb) sb.classList.remove("open");
+  if(mo) mo.classList.add("hidden");
+}
+
+function copySchoolId(){
+  const input = document.getElementById("school-id-display");
+  if(!input) return;
+  const val = input.value || "IDPS-SCHOOL-LOCAL";
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(val).then(() => {
+      toast("School ID copied to clipboard!", "success");
+    }).catch(() => {
+      toast("School ID: " + val, "info");
+    });
+  } else {
+    input.select();
+    document.execCommand("copy");
+    toast("School ID copied!", "success");
+  }
+}
+
+function downloadOfficialAdmissionForm(){
+  if(!window.jspdf){
+    toast("PDF library loading... please try again.", "warning");
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  addPdfLetterhead(doc, "STUDENT ADMISSION REGISTRATION FORM");
+
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.setTextColor(30, 41, 59);
+  doc.text("Academic Session: 2026-27", 20, 52);
+  doc.text("Date of Form: " + new Date().toLocaleDateString(), 150, 52);
+
+  const body = [
+    ["Student Full Name", admVal("adm-name") || "_________________________________"],
+    ["Class Applied For", admVal("adm-class") || "_________________"],
+    ["Roll Number / Admission No", admVal("adm-roll") || "_________________"],
+    ["Date of Birth", admVal("adm-dob") || "DD / MM / YYYY"],
+    ["Blood Group", (document.getElementById("adm-bloodgroup") ? document.getElementById("adm-bloodgroup").value : "") || "_______"],
+    ["Father's Full Name", admVal("adm-father-name") || "_________________________________"],
+    ["Father's Mobile No.", admVal("adm-father-phone") || "_________________"],
+    ["Mother's Full Name", admVal("adm-mother-name") || "_________________________________"],
+    ["Mother's Mobile No.", admVal("adm-mother-phone") || "_________________"],
+    ["Emergency Contact", (admVal("adm-emergency-name") ? (admVal("adm-emergency-name") + " (" + admVal("adm-emergency-phone") + ")") : "_________________________________")],
+    ["Permanent Address", admVal("adm-address") || "___________________________________________________________"],
+    ["Previous School Attended", admVal("adm-prev-school") || "_________________________________"],
+    ["Category / Caste", (document.getElementById("adm-category") ? document.getElementById("adm-category").value : "") || "General / OBC / SC / ST"],
+    ["Religion", admVal("adm-religion") || "_________________"],
+    ["Student Aadhar Card No.", admVal("adm-aadhar") || "_________________"]
+  ];
+
+  doc.autoTable({
+    startY: 58,
+    theme: "grid",
+    styles: { font: "times", fontSize: 10.5 },
+    head: [["Registration Field", "Student Information"]],
+    body: body
+  });
+
+  const finalY = doc.lastAutoTable.finalY + 16;
+  doc.setFontSize(9);
+  doc.setFont("times", "normal");
+  doc.text("Declaration: I hereby declare that all the information furnished above is true and correct to the best of my knowledge.", 20, finalY);
+  doc.text("_________________________", 20, finalY + 20);
+  doc.text("Parent / Guardian Signature", 20, finalY + 25);
+  doc.text("_________________________", 140, finalY + 20);
+  doc.text("Principal / Admission Officer", 140, finalY + 25);
+  doc.text("Generated on " + new Date().toLocaleString(), 105, 285, { align: "center" });
+
+  doc.save("IDPS_Official_Admission_Form.pdf");
+  toast("Official Admission Form PDF downloaded.", "success");
+}
+
+window.signOutApp = function(){
+  const app = document.getElementById("app");
+  const authScreen = document.getElementById("auth-screen");
+  if(app){
+    app.classList.add("hidden");
+    app.style.display = "none";
+  }
+  if(authScreen){
+    authScreen.classList.remove("hidden");
+    authScreen.style.display = "flex";
+  }
+  toast("Signed out successfully.", "info");
+};
+
+// Wire up events once DOM is loaded
+document.addEventListener("DOMContentLoaded", function(){
+  safeIcons();
+  animateAuthCard();
+  const signoutBtn = document.getElementById("signout-btn");
+  if(signoutBtn){
+    signoutBtn.onclick = window.signOutApp;
+  }
+});
+
+// Also run immediately if DOM is already parsed
+if(document.readyState === "complete" || document.readyState === "interactive"){
+  safeIcons();
+  animateAuthCard();
+  const signoutBtn = document.getElementById("signout-btn");
+  if(signoutBtn){
+    signoutBtn.onclick = window.signOutApp;
+  }
+}
+
+</script>
+</body>
+</html>
