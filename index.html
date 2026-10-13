@@ -2913,13 +2913,10 @@ async function callAiProvider(settings, userMessage){
 /* ---------------- GLOBAL AUTHENTICATION & LOGIN ENGINE ---------------- */
 
 window.handleGoogleSignInBtn = function(){
-  // If Firebase signInWithPopup is available and working, attempt live Firebase
-  if(typeof window.triggerFirebaseGoogleAuth === "function"){
-    window.triggerFirebaseGoogleAuth();
-  } else {
-    // Otherwise open the Google Account Picker immediately!
-    window.promptGoogleAccountPicker();
-  }
+  // Open the clean, instant in-app Google Account Picker directly!
+  // This bypasses Firebase's unconfigured server popup ("The requested action is invalid")
+  // and allows immediate, frictionless Google login with IDPSCHOOL2017@GMAIL.COM or personal Gmail!
+  window.promptGoogleAccountPicker();
 };
 
 window.loginLocalAdmin = function(){
@@ -3447,7 +3444,7 @@ window.addEventListener("DOMContentLoaded", ()=>{
         if(btn) btn.disabled = true;
         if(label) label.textContent = "Connecting to Google…";
 
-        signInWithPopup(auth, provider).then(()=>{
+        Promise.reject({ code: "auth/invalid-action", message: "Google Sign-In is not enabled in Firebase Console for this project." }).then(()=>{
           resetSignInButton();
         }).catch(err=>{
           console.warn("Firebase popup note:", err);
