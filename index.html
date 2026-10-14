@@ -171,12 +171,13 @@
 
   /* ---------------- AUTH SCREEN ---------------- */
   #auth-screen{
-    position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
+    position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    overflow-y:auto; overflow-x:hidden;
     background:
       radial-gradient(ellipse 700px 420px at 12% 8%, rgba(99,102,241,.10), transparent 60%),
       radial-gradient(ellipse 700px 460px at 92% 92%, rgba(184,144,63,.12), transparent 60%),
       var(--bg);
-    padding:20px;
+    padding:24px 16px 64px 16px;
   }
   .auth-card{ background:#fff; border:1px solid var(--line); border-radius:22px; padding:44px 40px; max-width:400px; width:100%; box-shadow:0 40px 80px -32px rgba(20,20,10,.35); text-align:center; }
   .google-btn{
@@ -379,12 +380,12 @@
 
 <!-- ============ AUTH SCREEN (Multi-School & Captcha Enabled) ============ -->
 <div id="auth-screen">
-  <div class="auth-card" id="auth-card" style="max-width:480px;border-radius:24px;padding:32px 28px;box-shadow:0 30px 70px -20px rgba(15,23,42,0.35);border:1px solid rgba(228,193,121,0.3);text-align:left;">
+  <div class="auth-card" id="auth-card" style="max-width:480px;width:100%;margin:auto;border-radius:24px;padding:32px 28px;box-shadow:0 30px 70px -20px rgba(15,23,42,0.35);border:1px solid rgba(228,193,121,0.3);text-align:left;">
     
-    <!-- Top Auth Tabs -->
-    <div class="flex items-center gap-2 mb-5 p-1 bg-slate-100 rounded-xl" id="auth-tabs">
-      <button type="button" class="ptab-btn active flex-1 text-center" id="tab-btn-login" onclick="switchAuthTab('login')">🔑 School Login</button>
-      <button type="button" class="ptab-btn flex-1 text-center" id="tab-btn-register" onclick="switchAuthTab('register')">🏫 Register New School</button>
+    <!-- Top Auth Tabs (Sticky so user can always switch between Login and Register) -->
+    <div class="flex items-center gap-2 mb-5 p-1.5 bg-slate-100/95 backdrop-blur rounded-xl sticky top-2 z-40 shadow-sm border border-slate-200/80" id="auth-tabs">
+      <button type="button" class="ptab-btn active flex-1 text-center py-2.5 text-xs sm:text-sm font-bold" id="tab-btn-login" onclick="switchAuthTab('login')">🔑 School Login</button>
+      <button type="button" class="ptab-btn flex-1 text-center py-2.5 text-xs sm:text-sm font-bold" id="tab-btn-register" onclick="switchAuthTab('register')">🏫 Register New School</button>
     </div>
 
     <!-- ============ TAB 1: SCHOOL LOGIN ============ -->
@@ -451,15 +452,23 @@
     </div>
 
     <div id="auth-panel-register" class="hidden">
+      <div class="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-200/80 flex-wrap">
+        <button type="button" class="btn-secondary text-xs font-bold text-indigo-700 border-indigo-200 bg-indigo-50/80 hover:bg-indigo-100 py-2 px-3.5 rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer" onclick="switchAuthTab('login')">
+          <i data-icon="arrow-left" class="w-4 h-4"></i>
+          <span>← Back to School Login</span>
+        </button>
+        <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">✓ Full Institutional Registration Form</span>
+      </div>
+
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-700 font-bold mb-3 shadow-inner border border-indigo-100">
           <i data-icon="school" class="w-7 h-7"></i>
         </div>
-        <h2 class="font-display text-[22px] sm:text-[25px] font-black tracking-tight text-[var(--ink)]">Official School Registration Portal</h2>
-        <p class="text-[12.5px] text-[var(--ink-soft)] mt-1 max-w-lg mx-auto">Create a customized, professional institutional workspace. Upload your school emblem, enter statutory codes, and configure authorized digital signatures.</p>
+        <h2 class="font-display text-[22px] sm:text-[26px] font-black tracking-tight text-[var(--ink)]">Official School Registration Portal</h2>
+        <p class="text-[12.5px] text-[var(--ink-soft)] mt-1 max-w-xl mx-auto">Create a customized, professional institutional workspace. Upload your school emblem, enter statutory codes, and configure authorized digital signatures.</p>
       </div>
 
-      <div class="space-y-4 max-h-[76vh] overflow-y-auto pr-2 custom-scrollbar text-xs space-y-6">
+      <div class="space-y-6 text-xs">
 
         <!-- SECTION 1: DUAL LOGOS SETUP -->
         <div class="p-5 sm:p-6 rounded-2xl border border-indigo-100 bg-gradient-to-r from-slate-50 to-indigo-50/40 shadow-xs space-y-4">
@@ -770,7 +779,7 @@
         <div id="user-name" class="text-[12.5px] font-semibold truncate">—</div>
         <div id="user-email" class="text-[11px] text-[var(--ink-faint)] truncate">—</div>
       </div>
-      <button id="signout-btn" class="btn-ghost-icon flex-shrink-0" title="Sign out"><i data-icon="log-out"></i></button>
+      <button id="signout-btn" onclick="window.signOutApp()" class="btn-ghost-icon flex-shrink-0" title="Switch School / Sign out"><i data-icon="log-out" class="w-4 h-4"></i></button>
     </div>
   </aside>
 
@@ -855,6 +864,8 @@
                 <span class="text-emerald-300 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span id="dash-cloud-status">Active Central Desk</span></span>
                 <span>•</span>
                 <button type="button" onclick="triggerQuickLogoUpload(1)" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 hover:bg-white/25 text-white border border-white/30 text-[11px] font-semibold transition cursor-pointer shadow-xs">📷 Change School Logo</button>
+                <span>•</span>
+                <button type="button" onclick="window.signOutApp()" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/30 hover:bg-rose-500/50 text-white border border-rose-300/40 text-[11px] font-semibold transition cursor-pointer shadow-xs">🚪 Switch School / Logout</button>
               </div>
             </div>
 
@@ -2185,16 +2196,69 @@ function addPdfLetterhead(doc, title, subtitle){
   if(title){ doc.setFontSize(13); doc.setFont("times","bold"); doc.setTextColor(30, 27, 75); doc.text(title, 105, 42, { align:"center" }); }
   if(subtitle){ doc.setFontSize(8.5); doc.setFont("times","italic"); doc.setTextColor(100, 116, 139); doc.text(subtitle, 105, 46.5, { align:"center" }); }
 }
+const ICON_PATHS = {
+  "layout-dashboard": '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  "user-plus": '<circle cx="9" cy="7" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h1"/><path d="M19 8v6M22 11h-6"/>',
+  "users": '<circle cx="9" cy="7" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><circle cx="17" cy="7" r="3"/><path d="M22 21v-1a5.5 5.5 0 0 0-3.5-5.1"/>',
+  "banknote": '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 10h.01M18 14h.01"/>',
+  "calendar-clock": '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><circle cx="15.5" cy="15.5" r="3.2"/><path d="M15.5 14v1.6l1 .8"/>',
+  "badge-check": '<path d="M12 2l2.2 2.2 3-.6.6 3L20 9l-2.2 2.2.6 3-3 .6L14 20l-2-2.2L9.8 20l-.6-3-3-.6L8 12 5.8 9.8l3-.6L9.4 4.6 12 2z"/><path d="M9 12l2 2 4-4"/>',
+  "graduation-cap": '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/>',
+  "settings": '<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="3"/>',
+  "log-out": '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  "log-in": '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>',
+  "arrow-left": '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  "menu": '<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>',
+  "upload": '<path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18"/>',
+  "calendar-plus": '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><line x1="12" y1="13" x2="12" y2="19"/><line x1="9" y1="16" x2="15" y2="16"/>',
+  "download": '<path d="M12 4v12M6 10l6 6 6-6"/><path d="M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18"/>',
+  "file-spreadsheet": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 13v6M12 13v6M16 13v6"/>',
+  "search": '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  "plus": '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  "save": '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  "rotate-ccw": '<path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/>',
+  "pencil": '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+  "edit-2": '<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  "edit-3": '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+  "pen-tool": '<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>',
+  "trash-2": '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+  "check": '<polyline points="20 6 9 17 4 12"/>',
+  "check-circle": '<circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/>',
+  "check-circle-2": '<circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/>',
+  "alert-circle": '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.5"/>',
+  "printer": '<path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1"/><path d="M6 17v4h12v-4"/>',
+  "x": '<line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/>',
+  "shield-alert": '<path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12" y2="16"/>',
+  "shield-check": '<path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  "calendar-x": '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><line x1="9.5" y1="13.5" x2="14.5" y2="18.5"/><line x1="14.5" y1="13.5" x2="9.5" y2="18.5"/>',
+  "file-down": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6M9.5 15.5l2.5 2.5 2.5-2.5"/>',
+  "chevron-right": '<polyline points="9 6 15 12 9 18"/>',
+  "x-circle": '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+  "alert-triangle": '<path d="M12 3l10 18H2z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12" y2="17"/>',
+  "info": '<circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="7.5" x2="12" y2="7.5"/>',
+  "message-circle": '<rect x="3" y="5" width="18" height="13" rx="5"/><path d="M8 21l3-3h5"/>',
+  "send": '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',
+  "bot": '<rect x="5" y="9" width="14" height="10" rx="2"/><line x1="12" y1="5" x2="12" y2="9"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>',
+  "key": '<circle cx="7" cy="15" r="4"/><path d="M9.8 12.2L20 2"/><path d="M15 7l3 3"/><path d="M18 4l3 3"/>',
+  "lock": '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  "image": '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+  "building": '<rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
+  "school": '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  "user-check": '<circle cx="9" cy="7" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 2.5.5"/><path d="M16 11l2 2 4-4"/>',
+  "megaphone": '<path d="M3 11v4a1 1 0 0 0 1 1h2l3 5V4L6 9H4a1 1 0 0 0-1 1z"/><path d="M11.6 16.8a3 3 0 1 0-5.8-1.6"/><path d="M17 6a9 9 0 0 1 0 12"/>',
+  "dot": '<circle cx="12" cy="12" r="3"/>'
+};
+
 function safeIcons(){
   try{
     document.querySelectorAll("[data-icon]").forEach(el=>{
       const name = el.getAttribute("data-icon");
       const inner = ICON_PATHS[name] || ICON_PATHS.dot;
-      const cls = el.getAttribute("class") || "";
+      const cls = el.getAttribute("class") || "w-4 h-4";
       const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
       svg.setAttribute("viewBox","0 0 24 24"); svg.setAttribute("fill","none"); svg.setAttribute("stroke","currentColor");
       svg.setAttribute("stroke-width","2"); svg.setAttribute("stroke-linecap","round"); svg.setAttribute("stroke-linejoin","round");
-      if(cls) svg.setAttribute("class", cls);
+      svg.setAttribute("class", cls);
       svg.innerHTML = inner;
       el.replaceWith(svg);
     });
@@ -2398,7 +2462,17 @@ function rerenderActiveView(){
   if(!active) return;
   const view = active.id.replace("view-","");
   if(view==="students") renderStudentTable();
+  if(view==="classes") renderClassesSetup();
   if(view==="fees") renderFeeTable();
+  if(view==="attendance") renderAttendanceView();
+  if(view==="exams") renderExamsView();
+  if(view==="marksheets") renderMarksheetsView();
+  if(view==="certificates") renderCertificatesView();
+  if(view==="reports") renderReportsHubView();
+  if(view==="admitcard") renderAdmitCardHub();
+  if(view==="signatures") loadSignaturesView();
+  if(view==="settings") loadSettingsView();
+  if(view==="backup") renderBackupView();
   if(view==="timetable") { populateClassList(); renderTimetablePreview(); }
   if(view==="requests"){
     const activeTabBtn = document.querySelector("#requests-tabs .ptab-btn.active");
@@ -4337,7 +4411,7 @@ async function callAiProvider(settings, userMessage){
 window.handleGoogleSignInBtn = function(){
   // Open the clean, instant in-app Google Account Picker directly!
   // This bypasses Firebase's unconfigured server popup ("The requested action is invalid")
-  // and allows immediate, frictionless Google login with IDPSCHOOL2017@GMAIL.COM or personal Gmail!
+  // and allows immediate, frictionless Google login with admin@schoolmanagement.org or personal Gmail!
   window.promptGoogleAccountPicker();
 };
 
@@ -4346,7 +4420,7 @@ window.loginLocalAdmin = function(){
   window.CURRENT_SCHOOL_UID = "local_admin";
   const user = {
     displayName: "School Administrator",
-    email: "admin@idps-school.edu",
+    email: "admin@schoolmanagement.org",
     uid: "local_admin"
   };
 
@@ -4395,17 +4469,17 @@ window.promptGoogleAccountPicker = function(){
         </div>
         <div>
           <h3 class="font-display text-[17.5px] font-bold text-[var(--ink)]">Sign in with Google</h3>
-          <p class="text-[12px] text-[var(--ink-soft)]">Choose an account to continue to IDPS School OS</p>
+          <p class="text-[12px] text-[var(--ink-soft)]">Choose an account to continue to School Management OS</p>
         </div>
       </div>
 
       <div class="space-y-2.5 mb-5">
-        <button class="w-full text-left card p-3 flex items-center justify-between hover:border-[var(--accent-light)] transition" onclick="loginWithGoogleUser('IDPS Administrator', 'IDPSCHOOL2017@GMAIL.COM')">
+        <button class="w-full text-left card p-3 flex items-center justify-between hover:border-[var(--accent-light)] transition" onclick="loginWithGoogleUser('School Administrator', 'admin@schoolmanagement.org')">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[13px]">IA</div>
             <div>
-              <div class="font-semibold text-[13.5px] text-[var(--ink)]">IDPS Administrator</div>
-              <div class="text-[11.5px] text-[var(--ink-soft)]">IDPSCHOOL2017@GMAIL.COM</div>
+              <div class="font-semibold text-[13.5px] text-[var(--ink)]">School Administrator</div>
+              <div class="text-[11.5px] text-[var(--ink-soft)]">admin@schoolmanagement.org</div>
             </div>
           </div>
           <i data-icon="chevron-right" class="w-4 h-4 text-[var(--ink-soft)]"></i>
@@ -4555,7 +4629,7 @@ function setupLocalStoragePersistence(){
       attendance: {},
       marks: {},
       settings: {
-        contact: { phone:"8889784747 , 7879309697", email:"IDPSCHOOL2017@GMAIL.COM", address:"Bangla Chouraha , Distt. Ashoknagar (M.P.)" }
+        contact: { phone:"+91 98765 43210", email:"admin@schoolmanagement.org", address:"14, Knowledge City, Vidya Vihar" }
       },
       nextReceiptNo: 4,
       nextTcNo: 1,
@@ -4589,7 +4663,7 @@ function showAppScreen(user){
     const emailEl = document.getElementById("user-email");
     const avatarEl = document.getElementById("user-avatar");
     if(nameEl) nameEl.textContent = user.displayName || "Administrator";
-    if(emailEl) emailEl.textContent = user.email || "admin@idps-school.edu";
+    if(emailEl) emailEl.textContent = user.email || "admin@schoolmanagement.org";
     if(avatarEl){
       if(user.photoURL){
         avatarEl.src = user.photoURL;
@@ -4677,6 +4751,7 @@ function navigate(view){
   else if(view === "signatures"){ loadSignaturesView(); }
   else if(view === "settings"){ loadSettingsView(); }
   else if(view === "timetable"){ populateClassList(); renderTimetablePreview(); }
+  else if(view === "admitcard"){ renderAdmitCardHub(); }
   else if(view === "parent"){ switchParentTab("overview"); }
 
   animateViewEnter(view);
@@ -4771,6 +4846,7 @@ function downloadOfficialAdmissionForm(){
 }
 
 window.signOutApp = function(){
+  try { localStorage.removeItem("idps_active_school_id"); } catch(e){}
   const app = document.getElementById("app");
   const authScreen = document.getElementById("auth-screen");
   if(app){
@@ -4780,8 +4856,10 @@ window.signOutApp = function(){
   if(authScreen){
     authScreen.classList.remove("hidden");
     authScreen.style.display = "flex";
+    authScreen.scrollTop = 0;
   }
-  toast("Signed out successfully.", "info");
+  if(typeof switchAuthTab === "function") switchAuthTab("login");
+  toast("Signed out. You can log in or register a school.", "info");
 };
 
 // Wire up events once DOM is loaded
@@ -5944,12 +6022,13 @@ function renderCertificatePreview(){
 }
 
 function buildCertificateHtml(student, exam, category, dateStr){
-  const schoolName = DB.settings?.schoolName || "I.D.P.S. ENGLISH MEDIUM SCHOOL";
-  const address = DB.settings?.address || "Bangla Chouraha, Distt. Ashoknagar (M.P.)";
+  const schoolName = (DB.settings?.schoolName || "School OS").toUpperCase();
+  const address = DB.settings?.address || "";
   const certNo = "CERT-" + (exam ? exam.year.replace("-","") : "2026") + "-" + String(student.rollNo).padStart(4, "0");
   const logo = DB.settings?.logoUrl || LEFT_LOGO_DATA_URI;
+  const logoRight = DB.settings?.logo2Url || DB.settings?.logoUrl || RIGHT_LOGO_DATA_URI || logo;
   const examName = exam ? exam.name : "Half-Yearly Examination 2026-27";
-  const academicYear = exam ? exam.year : "2026-27";
+  const academicYear = exam ? exam.year : (DB.settings?.academicYear || "2026-27");
 
   return `
     <div class="certificate-page">
@@ -6562,7 +6641,7 @@ function buildAdmitCardHtml(student, exam, strictFee){
   } else {
     // Generate default subjects with structured morning timings
     const subjects = getSubjectsForClass(student.className);
-    const startBase = new Date(exam ? exam.date : todayStr());
+    let startBase = new Date((exam && exam.date) ? exam.date : todayStr()); if(isNaN(startBase.getTime())) startBase = new Date();
     datesheet = subjects.map((sub, idx) => {
       const d = new Date(startBase);
       d.setDate(d.getDate() + (idx * 2));
@@ -7124,7 +7203,7 @@ function compressImageDataUrl(rawDataUrl, maxW, maxH, callback){
       let out = canvas.toDataURL("image/png");
       if(out.length > 180000){
         // Fallback to high-quality webp/jpeg if PNG is still huge
-        out = canvas.toDataURL("image/webp", 0.88);
+        out = canvas.toDataURL("image/jpeg", 0.90);
       }
       callback(out || rawDataUrl);
     } catch(err){
@@ -7151,6 +7230,19 @@ function sanitizeSchoolObjectLogos(s){
   }
   if(isLegacyIdpsLogo(s.logo2Url)){
     s.logo2Url = s.logoUrl;
+    changed = true;
+  }
+  if(s.slogan === "“Work For Your Bright Future”" || s.slogan === "Work For Your Bright Future"){
+    s.slogan = "";
+    changed = true;
+  }
+  if(s.tagline === "An English Medium School"){
+    s.tagline = "";
+    changed = true;
+  }
+  if(s.principalName === "Dr. R. K. Sharma" || s.principalName === "Principal Dr. Sharma"){
+    s.principalName = (s.name || s.schoolName || "School") + " Principal";
+    s.adminName = s.principalName;
     changed = true;
   }
   return changed;
@@ -7275,27 +7367,35 @@ function switchAuthTab(tab){
   const panelLogin = document.getElementById("auth-panel-login");
   const panelReg = document.getElementById("auth-panel-register");
   const authCard = document.getElementById("auth-card");
+  const authScreen = document.getElementById("auth-screen");
 
   if(tab === "login"){
     if(authCard){
       authCard.style.maxWidth = "480px";
+      authCard.style.width = "100%";
+      authCard.style.margin = "auto";
       authCard.style.padding = "32px 28px";
     }
     if(btnLogin) btnLogin.classList.add("active");
     if(btnReg) btnReg.classList.remove("active");
     if(panelLogin) panelLogin.classList.remove("hidden");
     if(panelReg) panelReg.classList.add("hidden");
+    if(authScreen) authScreen.scrollTop = 0;
+    window.scrollTo(0, 0);
     refreshLoginCaptcha();
   } else {
     if(authCard){
-      authCard.style.maxWidth = "840px";
-      authCard.style.width = "95vw";
-      authCard.style.padding = "36px 36px";
+      authCard.style.maxWidth = "980px";
+      authCard.style.width = "96%";
+      authCard.style.margin = "8px auto 48px auto";
+      authCard.style.padding = "32px 36px";
     }
     if(btnReg) btnReg.classList.add("active");
     if(btnLogin) btnLogin.classList.remove("active");
     if(panelReg) panelReg.classList.remove("hidden");
     if(panelLogin) panelLogin.classList.add("hidden");
+    if(authScreen) authScreen.scrollTop = 0;
+    window.scrollTo(0, 0);
     refreshRegCaptcha();
   }
   safeIcons();
@@ -7922,6 +8022,270 @@ function applySchoolBranding(school){
 
   // Re-render active view to propagate new school identity across forms/cards
   rerenderActiveView();
+}
+
+
+/* ==========================================================================
+   MODULE 12: DEDICATED SIGNATURES HUB & LIVE SIGNATURE DRAWING PAD
+   ========================================================================== */
+
+let __currentDrawingTarget = null;
+
+function loadSignaturesView(){
+  if(!DB.settings) DB.settings = {};
+  if(!DB.settings.signatures) DB.settings.signatures = {};
+
+  const sigs = DB.settings.signatures;
+  const types = ["principal", "exam", "teacher", "cashier"];
+
+  types.forEach(t => {
+    const nameEl = document.getElementById("sign-name-" + t);
+    if(nameEl){
+      if(t === "principal") nameEl.value = sigs.principalName || DB.settings.principalName || "";
+      else if(t === "exam") nameEl.value = sigs.examControllerName || "";
+      else if(t === "teacher") nameEl.value = sigs.classTeacherName || "";
+      else if(t === "cashier") nameEl.value = sigs.cashierName || "";
+    }
+
+    const imgEl = document.getElementById("sign-preview-" + t);
+    const emptyEl = document.getElementById("sign-empty-" + t);
+    let imgUrl = null;
+    if(t === "principal") imgUrl = sigs.principal || DB.settings.principalSignUrl;
+    else if(t === "exam") imgUrl = sigs.examController || sigs.exam;
+    else if(t === "teacher") imgUrl = sigs.classTeacher || sigs.teacher;
+    else if(t === "cashier") imgUrl = sigs.cashier;
+
+    if(imgEl && emptyEl){
+      if(imgUrl){
+        imgEl.src = imgUrl;
+        imgEl.style.display = "block";
+        emptyEl.style.display = "none";
+      } else {
+        imgEl.src = "";
+        imgEl.style.display = "none";
+        emptyEl.style.display = "block";
+      }
+    }
+  });
+
+  safeIcons();
+}
+
+function handleSignatureFileUpload(inputEl, signType){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    compressImageDataUrl(e.target.result, 320, 140, function(compressedUri){
+      applySignatureToState(signType, compressedUri);
+      toast(`${signType.toUpperCase()} signature uploaded & saved!`, "success");
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function applySignatureToState(signType, dataUri){
+  if(!DB.settings) DB.settings = {};
+  if(!DB.settings.signatures) DB.settings.signatures = {};
+
+  if(signType === "principal"){
+    DB.settings.signatures.principal = dataUri;
+    DB.settings.principalSignUrl = dataUri;
+  } else if(signType === "exam"){
+    DB.settings.signatures.examController = dataUri;
+    DB.settings.signatures.exam = dataUri;
+  } else if(signType === "teacher"){
+    DB.settings.signatures.classTeacher = dataUri;
+    DB.settings.signatures.teacher = dataUri;
+  } else if(signType === "cashier"){
+    DB.settings.signatures.cashier = dataUri;
+  }
+
+  const imgEl = document.getElementById("sign-preview-" + signType);
+  const emptyEl = document.getElementById("sign-empty-" + signType);
+  if(imgEl && emptyEl){
+    if(dataUri){
+      imgEl.src = dataUri;
+      imgEl.style.display = "block";
+      emptyEl.style.display = "none";
+    } else {
+      imgEl.src = "";
+      imgEl.style.display = "none";
+      emptyEl.style.display = "block";
+    }
+  }
+
+  saveDatabase();
+  syncSignaturesToRegisteredProfile();
+}
+
+function clearSignature(signType){
+  applySignatureToState(signType, null);
+  toast(`${signType.toUpperCase()} signature cleared.`, "info");
+}
+
+function saveAllSignatures(){
+  if(!DB.settings) DB.settings = {};
+  if(!DB.settings.signatures) DB.settings.signatures = {};
+
+  const pName = document.getElementById("sign-name-principal")?.value.trim() || "";
+  const exName = document.getElementById("sign-name-exam")?.value.trim() || "";
+  const tName = document.getElementById("sign-name-teacher")?.value.trim() || "";
+  const cName = document.getElementById("sign-name-cashier")?.value.trim() || "";
+
+  if(pName) DB.settings.principalName = pName;
+  DB.settings.signatures.principalName = pName;
+  DB.settings.signatures.examControllerName = exName;
+  DB.settings.signatures.classTeacherName = tName;
+  DB.settings.signatures.cashierName = cName;
+
+  saveDatabase();
+  syncSignaturesToRegisteredProfile();
+  toast("All institutional signatures & designations saved successfully!", "success");
+}
+
+function syncSignaturesToRegisteredProfile(){
+  try {
+    const schools = getRegisteredSchools();
+    const cur = schools.find(s => s.id === window.CURRENT_SCHOOL_ID);
+    if(cur){
+      cur.principalName = DB.settings.principalName;
+      cur.principalSignUrl = DB.settings.principalSignUrl;
+      cur.signatures = DB.settings.signatures;
+      saveRegisteredSchools(schools);
+    }
+  } catch(e){}
+}
+
+function openSignaturePadModal(targetType = "principal"){
+  __currentDrawingTarget = targetType;
+  const targetTitles = {
+    principal: "Principal / Head of Institution",
+    exam: "Controller of Examination",
+    teacher: "Class Teacher / Faculty",
+    cashier: "Cashier / Accounts Officer"
+  };
+
+  const modalHtml = `
+    <div class="p-6 max-w-lg mx-auto bg-white rounded-3xl">
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+        <div>
+          <h3 class="font-display font-bold text-lg text-slate-900">Live Digital Signature Pad</h3>
+          <p class="text-xs text-slate-500">Sign directly below for: <span class="font-bold text-indigo-700">${targetTitles[targetType] || targetType}</span></p>
+        </div>
+        <button type="button" class="btn-ghost-icon p-1.5" onclick="closeModal()"><i data-icon="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="bg-slate-50 p-2 rounded-2xl border-2 border-dashed border-indigo-200 mb-3 text-center">
+        <canvas id="live-sign-canvas" width="440" height="180" class="w-full bg-white rounded-xl shadow-inner cursor-crosshair touch-none border border-slate-200"></canvas>
+        <p class="text-[10.5px] text-slate-400 mt-1">Use finger or mouse cursor to draw signature cleanly inside the box.</p>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <button type="button" class="btn-secondary text-xs" onclick="clearLiveSignaturePad()">
+          <i data-icon="rotate-ccw" class="w-3.5 h-3.5"></i> Clear Canvas
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" class="btn-secondary text-xs" onclick="closeModal()">Cancel</button>
+          <button type="button" class="btn-primary text-xs" onclick="saveLiveSignatureFromPad()">
+            <i data-icon="check" class="w-3.5 h-3.5"></i> Apply &amp; Save Signature
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  openModal(modalHtml);
+  safeIcons();
+  initLiveSignatureCanvas();
+}
+
+function initLiveSignatureCanvas(){
+  const canvas = document.getElementById("live-sign-canvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.strokeStyle = "#1e1b4b";
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if(e.touches && e.touches.length > 0){
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  }
+
+  function start(e){
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    lastX = p.x; lastY = p.y;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+  }
+
+  function move(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+  }
+
+  function stop(e){
+    if(!drawing) return;
+    e.preventDefault();
+    drawing = false;
+  }
+
+  canvas.addEventListener("mousedown", start);
+  canvas.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", stop);
+  canvas.addEventListener("touchstart", start, { passive: false });
+  canvas.addEventListener("touchmove", move, { passive: false });
+  canvas.addEventListener("touchend", stop, { passive: false });
+}
+
+function clearLiveSignaturePad(){
+  const canvas = document.getElementById("live-sign-canvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function saveLiveSignatureFromPad(){
+  const canvas = document.getElementById("live-sign-canvas");
+  if(!canvas || !__currentDrawingTarget) return;
+  const dataUri = canvas.toDataURL("image/png");
+  applySignatureToState(__currentDrawingTarget, dataUri);
+  closeModal();
+  toast(`Digital signature applied for ${__currentDrawingTarget.toUpperCase()}!`, "success");
+}
+
+
+function getSignatureImgHtml(signUrl, defaultText, altText, maxH = "36px"){
+  if(signUrl){
+    return `<div class="h-9 flex items-end justify-center"><img src="${signUrl}" style="max-height:${maxH};max-width:130px;object-contain:contain;mix-blend-mode:multiply" alt="${altText || 'Sign'}"></div>`;
+  }
+  return `<div class="h-9 flex items-end justify-center font-cursive text-indigo-950 font-bold text-sm tracking-wide">${defaultText || 'Signature'}</div>`;
+}
+
+function getSchoolDbStorageKey(schoolId){
+  return "idps_school_db_" + (schoolId || window.CURRENT_SCHOOL_ID || "demo_school");
 }
 
 function loadIsolatedSchoolDatabase(schoolId, schoolProfile){
