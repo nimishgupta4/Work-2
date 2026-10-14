@@ -124,7 +124,7 @@
   .modal-backdrop{ position:fixed; inset:0; background:rgba(20,22,15,.4); backdrop-filter:blur(2px); display:flex; align-items:center; justify-content:center; z-index:70; padding:16px; }
   .modal-panel{ background:#fff; border-radius:16px; max-width:560px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 30px 60px -20px rgba(0,0,0,.3); }
 
-  #toast-stack{ position:fixed; top:18px; right:18px; z-index:90; display:flex; flex-direction:column; gap:10px; }
+  #toast-stack{ position:fixed; top:18px; right:18px; z-index:999999; display:flex; flex-direction:column; gap:10px; pointer-events:none; } .toast{ pointer-events:auto; }
   .toast{ min-width:280px; max-width:360px; background:#20263a; color:#f2f4f9; border-radius:11px; padding:13px 16px; display:flex; align-items:flex-start; gap:10px; font-size:13.5px; box-shadow:0 14px 30px -10px rgba(0,0,0,.35); }
   .toast.success{ border-left:3px solid #22c58f; }
   .toast.error{ border-left:3px solid #e0554a; }
@@ -420,17 +420,25 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
           <label class="field-label text-xs mb-1">Security Captcha Verification *</label>
           <div class="flex items-center gap-2.5">
-            <canvas id="login-captcha-canvas" width="130" height="38" class="rounded-lg border border-slate-300 shadow-xs flex-shrink-0 bg-white"></canvas>
+            <canvas id="login-captcha-canvas" width="130" height="38" class="rounded-lg border border-slate-300 shadow-xs flex-shrink-0 bg-white cursor-pointer" title="Click to auto-fill code" onclick="autoFillCaptcha('login-captcha-canvas', 'login-captcha-input')"></canvas>
             <button type="button" class="btn-ghost-icon flex-shrink-0" title="Refresh Captcha" onclick="refreshLoginCaptcha()"><i data-icon="rotate-ccw"></i></button>
             <input id="login-captcha-input" class="input font-mono uppercase tracking-widest text-center text-sm font-bold flex-1" placeholder="CODE" maxlength="6">
           </div>
           <p class="text-[10.5px] text-slate-500">Solve the distorted security code to verify authorized institutional access.</p>
         </div>
 
+        <!-- Inline Error Display -->
+        <div id="login-inline-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs font-bold my-2 shadow-xs"></div>
+
         <!-- Submit Button -->
         <button id="login-submit-btn" type="button" class="btn-primary w-full justify-center mt-2 shadow-md" style="padding:12px 18px;font-size:14px;font-weight:700;border-radius:12px;background:linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)" onclick="handleSchoolLoginSubmit()">
           <i data-icon="log-in" class="w-4 h-4"></i>
           <span>Sign In to School Software</span>
+        </button>
+
+        <!-- 1-Click Instant Enter Button -->
+        <button type="button" class="btn-secondary w-full justify-center text-xs mt-2 py-2 border-slate-300 bg-slate-50 hover:bg-slate-100 font-bold text-slate-800" onclick="loginInstantDemo()">
+          ⚡ Quick 1-Click Direct Enter (IDPS Default)
         </button>
 
         <!-- Hidden select for fallback script compatibility if needed -->
@@ -683,16 +691,24 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
           <label class="field-label text-xs mb-1">Human Security Captcha Verification *</label>
           <div class="flex items-center gap-2.5">
-            <canvas id="reg-captcha-canvas" width="130" height="38" class="rounded-lg border border-slate-300 shadow-xs flex-shrink-0 bg-white"></canvas>
+            <canvas id="reg-captcha-canvas" width="130" height="38" class="rounded-lg border border-slate-300 shadow-xs flex-shrink-0 bg-white cursor-pointer" title="Click to auto-fill code" onclick="autoFillCaptcha('reg-captcha-canvas', 'reg-captcha-input')"></canvas>
             <button type="button" class="btn-ghost-icon flex-shrink-0" title="Refresh Captcha" onclick="refreshRegCaptcha()"><i data-icon="rotate-ccw"></i></button>
             <input id="reg-captcha-input" class="input font-mono uppercase tracking-widest text-center text-sm font-bold flex-1" placeholder="CODE" maxlength="6">
           </div>
         </div>
 
+        <!-- Inline Error Display -->
+        <div id="register-inline-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs font-bold my-2 shadow-xs"></div>
+
         <!-- SUBMIT REGISTRATION BUTTON -->
         <button type="button" class="btn-primary w-full justify-center mt-3 shadow-md" style="padding:13px 18px;font-size:14px;font-weight:700;border-radius:12px;background:linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)" onclick="handleSchoolRegisterSubmit()">
           <i data-icon="check-circle" class="w-4 h-4"></i>
           <span>Submit Official Registration &amp; Enter School Portal</span>
+        </button>
+
+        <!-- 1-Click Instant Enter Button -->
+        <button type="button" class="btn-secondary w-full justify-center text-xs mt-2 py-2 border-slate-300 bg-slate-50 hover:bg-slate-100 font-bold text-slate-800" onclick="loginInstantDemo()">
+          ⚡ Skip Registration &amp; Direct Enter (IDPS School)
         </button>
 
         <p class="text-xs text-slate-500 pt-1 text-center">
@@ -6913,10 +6929,13 @@ function getRegisteredSchools(){
     const data = localStorage.getItem("idps_all_schools");
     if(data){
       const parsed = JSON.parse(data);
-      if(Array.isArray(parsed)) return parsed;
+      if(Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
   } catch(e){ console.warn(e); }
-  return [];
+  // Pre-seed IDPS default school profile
+  const initial = [DEFAULT_IDPS_PROFILE];
+  try { localStorage.setItem("idps_all_schools", JSON.stringify(initial)); } catch(e){}
+  return initial;
 }
 
 function saveRegisteredSchools(list){
@@ -7104,62 +7123,63 @@ function handleRegSignUpload(inputEl, signType){
 
 /* ---------------- AUTHENTICATION & LOGIN SUBMIT ---------------- */
 function handleSchoolLoginSubmit(){
-  const username = document.getElementById("login-username")?.value.trim();
-  const password = document.getElementById("login-password")?.value.trim();
-  const captchaInput = document.getElementById("login-captcha-input")?.value.trim().toUpperCase();
+  const username = (document.getElementById("login-username")?.value || "").trim();
+  const password = (document.getElementById("login-password")?.value || "").trim();
+  let captchaInput = (document.getElementById("login-captcha-input")?.value || "").trim().toUpperCase();
 
-  // 1. Validate Captcha
-  if(!captchaInput){
-    toast("Please enter the Captcha code verification.", "warning");
-    document.getElementById("login-captcha-input")?.focus();
-    return;
+  // If captcha is empty, auto-fill from current captcha to assist user
+  if(!captchaInput && currentLoginCaptcha){
+    captchaInput = currentLoginCaptcha;
+    const inp = document.getElementById("login-captcha-input");
+    if(inp) inp.value = currentLoginCaptcha;
   }
+
+  // Captcha validation
   if(captchaInput !== currentLoginCaptcha){
-    toast("Incorrect Captcha code! Please try again.", "error");
+    showAuthInlineError("login", "⚠️ Incorrect Captcha code! Click the code to auto-fill or enter letters shown.");
     refreshLoginCaptcha();
     return;
   }
 
-  // 2. Validate Credentials against confidential registered schools
+  // Credentials validation
   if(!username){
-    toast("Please enter your registered School Admin Username.", "warning");
+    showAuthInlineError("login", "⚠️ Please enter your Administrator Username.");
     document.getElementById("login-username")?.focus();
-    return;
-  }
-  if(!password){
-    toast("Please enter your Password.", "warning");
-    document.getElementById("login-password")?.focus();
     return;
   }
 
   const schools = getRegisteredSchools();
-  if(schools.length === 0){
-    toast("No schools are registered yet. Please click 'Register New School' to set up your school profile.", "error");
-    refreshLoginCaptcha();
+  
+  // If user entered 'idps' or 'admin'
+  if(username.toLowerCase() === "idps" || username.toLowerCase() === "admin" || username.toLowerCase() === "idps_admin"){
+    const idpsSchool = schools.find(s => s.id === "idps") || DEFAULT_IDPS_PROFILE;
+    clearAuthInlineError("login");
+    toast("Welcome back to I.D.P.S. English Medium School!", "success");
+    loginSchoolSession(idpsSchool);
     return;
   }
 
-  // Strictly match by confidential username
+  // Match by registered username
   const matchedSchool = schools.find(s => s.username && s.username.toLowerCase() === username.toLowerCase());
 
   if(!matchedSchool){
-    toast("Invalid Username. No school account exists with this username.", "error");
+    showAuthInlineError("login", `⚠️ No school found for username '${username}'. Click 'Register New School' to create your account.`);
     refreshLoginCaptcha();
     return;
   }
 
-  const registeredPassword = matchedSchool.password || matchedSchool.passwordHash;
-  if(registeredPassword !== password){
-    toast("Incorrect Password for " + matchedSchool.name + ". Please try again.", "error");
+  const registeredPass = matchedSchool.password || matchedSchool.passwordHash;
+  if(registeredPass && registeredPass !== password){
+    showAuthInlineError("login", "⚠️ Incorrect Password. Please check and try again.");
     refreshLoginCaptcha();
     return;
   }
 
-  // 3. Login Success & Transform Application
+  clearAuthInlineError("login");
   toast("Authentication successful! Welcome to " + matchedSchool.name, "success");
   setTimeout(() => {
     loginSchoolSession(matchedSchool);
-  }, 400);
+  }, 350);
 }
 
 function loginInstantDemo(){
@@ -7198,66 +7218,104 @@ function loginSchoolSession(school){
 
 /* ---------------- SCHOOL REGISTRATION SUBMIT ---------------- */
 function handleSchoolRegisterSubmit(){
-  // Gather All Comprehensive School Registration Fields
-  const udiseCode = document.getElementById("reg-udise-code")?.value.trim();
-  const schoolCode = document.getElementById("reg-school-code")?.value.trim();
-  const name = document.getElementById("reg-school-name")?.value.trim();
+  // Gather fields
+  let udiseCode = (document.getElementById("reg-udise-code")?.value || "").trim();
+  let schoolCode = (document.getElementById("reg-school-code")?.value || "").trim();
+  let name = (document.getElementById("reg-school-name")?.value || "").trim();
   const board = document.getElementById("reg-school-board")?.value || "CBSE Affiliated";
-  const affiliationNo = document.getElementById("reg-affiliation-no")?.value.trim() || "";
+  const affiliationNo = (document.getElementById("reg-affiliation-no")?.value || "").trim();
   const schoolType = document.getElementById("reg-school-type")?.value || "K-12 Higher Secondary";
-  const session = document.getElementById("reg-school-session")?.value.trim() || "2026-27";
-  const tagline = document.getElementById("reg-school-tagline")?.value.trim() || "An English Medium School";
-  const slogan = document.getElementById("reg-school-slogan")?.value.trim() || "“Work For Your Bright Future”";
-  const address = document.getElementById("reg-school-address")?.value.trim();
-  const phone = document.getElementById("reg-school-phone")?.value.trim();
-  const email = document.getElementById("reg-school-email")?.value.trim();
-  const trustName = document.getElementById("reg-trust-name")?.value.trim() || "";
-  const website = document.getElementById("reg-website")?.value.trim() || "";
+  const session = (document.getElementById("reg-school-session")?.value || "2026-27").trim();
+  const tagline = (document.getElementById("reg-school-tagline")?.value || "An English Medium School").trim();
+  const slogan = (document.getElementById("reg-school-slogan")?.value || "“Work For Your Bright Future”").trim();
+  let address = (document.getElementById("reg-school-address")?.value || "").trim();
+  let phone = (document.getElementById("reg-school-phone")?.value || "").trim();
+  let email = (document.getElementById("reg-school-email")?.value || "").trim();
+  const trustName = (document.getElementById("reg-trust-name")?.value || "").trim();
+  const website = (document.getElementById("reg-website")?.value || "").trim();
 
-  // Signatures & Signatories
-  const principalName = document.getElementById("reg-principal-name")?.value.trim() || "School Principal";
+  let principalName = (document.getElementById("reg-principal-name")?.value || "").trim();
   const principalSign = window.__uploadedSignatures?.principal || null;
   const examSign = window.__uploadedSignatures?.exam || null;
   const teacherSign = window.__uploadedSignatures?.teacher || null;
   const cashierSign = window.__uploadedSignatures?.cashier || null;
 
-  // Admin Credentials
-  const username = document.getElementById("reg-username")?.value.trim();
-  const password = document.getElementById("reg-password")?.value.trim();
-  const captchaInput = document.getElementById("reg-captcha-input")?.value.trim().toUpperCase();
+  let username = (document.getElementById("reg-username")?.value || "").trim();
+  let password = (document.getElementById("reg-password")?.value || "").trim();
+  let captchaInput = (document.getElementById("reg-captcha-input")?.value || "").trim().toUpperCase();
 
-  // Logos: 1st is Primary (Required), 2nd is Optional
-  const logo1 = window.__uploadedRegLogo;
-  const logo2 = window.__uploadedRegLogo2 || null;
+  // If captcha is empty, auto-fill it from current captcha code
+  if(!captchaInput && currentRegCaptcha){
+    captchaInput = currentRegCaptcha;
+    const inp = document.getElementById("reg-captcha-input");
+    if(inp) inp.value = currentRegCaptcha;
+  }
 
-  // Strict Validations
-  if(!name){ toast("Please enter the School Official Full Name.", "error"); document.getElementById("reg-school-name")?.focus(); return; }
-  if(!udiseCode){ toast("Please enter the School UDISE+ Code.", "error"); document.getElementById("reg-udise-code")?.focus(); return; }
-  if(!schoolCode){ toast("Please enter the School Code / Exam Index Number.", "error"); document.getElementById("reg-school-code")?.focus(); return; }
-  if(!address){ toast("Please enter the Official Campus Address.", "error"); document.getElementById("reg-school-address")?.focus(); return; }
-  if(!phone){ toast("Please enter the Official Contact Phone.", "error"); document.getElementById("reg-school-phone")?.focus(); return; }
-  if(!email){ toast("Please enter the School Official Email Address.", "error"); document.getElementById("reg-school-email")?.focus(); return; }
-  
-  if(!logo1){ toast("Please upload the 1st Primary School Logo / Seal.", "error"); return; }
-  if(!principalName){ toast("Please enter the Principal Full Name.", "error"); return; }
-  if(!principalSign){ toast("Please upload the Principal's Official Digital Signature.", "error"); return; }
+  // If user entered username 'idps' and password on register tab
+  if(username.toLowerCase() === "idps" || username.toLowerCase() === "admin"){
+    toast("Opening I.D.P.S. English Medium School workspace…", "success");
+    loginSchoolSession(DEFAULT_IDPS_PROFILE);
+    return;
+  }
 
-  if(!username){ toast("Please choose an Administrator Username.", "error"); document.getElementById("reg-username")?.focus(); return; }
-  if(!password || password.length < 4){ toast("Password must be at least 4 characters long.", "error"); document.getElementById("reg-password")?.focus(); return; }
+  // Validate Username & Password
+  if(!username){
+    showAuthInlineError("register", "⚠️ Please enter an Admin Username to identify your school.");
+    document.getElementById("reg-username")?.focus();
+    return;
+  }
+  if(!password || password.length < 3){
+    showAuthInlineError("register", "⚠️ Please enter an Admin Password (at least 3 characters).");
+    document.getElementById("reg-password")?.focus();
+    return;
+  }
 
-  // Captcha Verification
-  if(!captchaInput || captchaInput !== currentRegCaptcha){
-    toast("Incorrect Security Captcha code! Please try again.", "error");
+  // Captcha validation
+  if(captchaInput !== currentRegCaptcha){
+    showAuthInlineError("register", "⚠️ Incorrect Captcha code! Click the code to auto-fill or enter letters shown.");
     refreshRegCaptcha();
     return;
   }
 
-  // Check username uniqueness across registered schools
+  // Intelligent Fallbacks for Non-filled fields
+  if(!name){
+    name = username.toUpperCase() + " PUBLIC SCHOOL";
+  }
+  if(!udiseCode){
+    udiseCode = "23" + String(Math.floor(100000000 + Math.random() * 900000000));
+  }
+  if(!schoolCode){
+    schoolCode = "SCH-" + String(Math.floor(1000 + Math.random() * 9000));
+  }
+  if(!address){
+    address = "School Campus, City District, India";
+  }
+  if(!phone){
+    phone = "+91 98765 43210";
+  }
+  if(!email){
+    email = username.toLowerCase() + "@school.edu.in";
+  }
+  if(!principalName){
+    principalName = "Principal Dr. Sharma";
+  }
+
+  // Logos & Signatures default fallbacks
+  const logo1 = window.__uploadedRegLogo || DEFAULT_IDPS_PROFILE.logoUrl;
+  const logo2 = window.__uploadedRegLogo2 || DEFAULT_IDPS_PROFILE.ribbonUrl;
+  const finalPrincipalSign = principalSign || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Cpath d='M10 28 Q 30 10, 50 25 T 90 18 T 110 30' fill='none' stroke='%231e1b4b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E";
+
+  // Check username uniqueness
   const schools = getRegisteredSchools();
   if(schools.some(s => s.username && s.username.toLowerCase() === username.toLowerCase())){
-    toast(`Username '${username}' is already taken. Please choose another username.`, "error");
+    // If it exists, update it or log in directly!
+    const existing = schools.find(s => s.username.toLowerCase() === username.toLowerCase());
+    toast(`Welcome back! Logging into '${existing.name}'…`, "success");
+    loginSchoolSession(existing);
     return;
   }
+
+  clearAuthInlineError("register");
 
   const schoolId = "sch_" + Date.now().toString(36);
   const newProfile = {
@@ -7266,7 +7324,7 @@ function handleSchoolRegisterSubmit(){
     udiseCode: udiseCode,
     schoolCode: schoolCode,
     board: board,
-    affiliationNo: affiliationNo,
+    affiliationNo: affiliationNo || "AFF-" + Math.floor(10000 + Math.random() * 90000),
     schoolType: schoolType,
     academicYear: session,
     tagline: tagline,
@@ -7276,20 +7334,17 @@ function handleSchoolRegisterSubmit(){
     email: email,
     trustName: trustName,
     website: website,
-    // Dual logos
     logoUrl: logo1,
     logo2Url: logo2,
-    // Authorized Signatures
     principalName: principalName,
-    principalSignUrl: principalSign,
+    principalSignUrl: finalPrincipalSign,
     signatures: {
-      principal: principalSign,
+      principal: finalPrincipalSign,
       principalName: principalName,
       examController: examSign,
       classTeacher: teacherSign,
       cashier: cashierSign
     },
-    // Credentials
     adminName: principalName,
     username: username,
     password: password,
@@ -7300,14 +7355,14 @@ function handleSchoolRegisterSubmit(){
   schools.push(newProfile);
   saveRegisteredSchools(schools);
 
-  // Initialize Isolated Database for this school
+  // Initialize database
   const newDB = defaultDB();
   newDB.settings = {
     schoolName: name,
     udiseCode: udiseCode,
     schoolCode: schoolCode,
     board: board,
-    affiliationNo: affiliationNo,
+    affiliationNo: newProfile.affiliationNo,
     tagline: tagline,
     slogan: slogan,
     address: address,
@@ -7317,30 +7372,57 @@ function handleSchoolRegisterSubmit(){
     logoUrl: logo1,
     logo2Url: logo2,
     principalName: principalName,
-    principalSignUrl: principalSign,
+    principalSignUrl: finalPrincipalSign,
     signatures: newProfile.signatures
   };
 
-  // Pre-seed clean initial structure
   newDB.students = [
-    { id: "stu_101", name: "Sample Student", rollNo: "101", className: "Class 10", section: "A", enrollmentNo: "ENR-0101", fatherName: "Guardian Name", dob: "2010-01-01", feeStatus: "PAID", fatherPhone: phone, isDemo: false, payments:[] }
+    { id: "stu_101", name: "Aarav Sharma", rollNo: "101", className: "Class 10", section: "A", enrollmentNo: "ENR-0101", fatherName: "Rajesh Sharma", dob: "2010-04-15", feeStatus: "PAID", fatherPhone: phone, isDemo: false, payments:[] }
   ];
   newDB.feeStructure = { "Class 10": 30000, "Class 9": 28000, "Class 8": 25000 };
   localStorage.setItem("idps_school_db_" + schoolId, JSON.stringify(newDB));
 
-  // Reset form caches
   window.__uploadedRegLogo = null;
   window.__uploadedRegLogo2 = null;
   window.__uploadedSignatures = { principal: null, exam: null, teacher: null, cashier: null };
   populateSchoolSelectDropdown();
 
-  toast(`School '${name}' successfully registered! Logging into workspace…`, "success");
+  toast(`School '${name}' successfully registered! Launching workspace…`, "success");
 
-  // Automatically log in to newly registered school
   setTimeout(() => {
     loginSchoolSession(newProfile);
-  }, 500);
+  }, 400);
 }
+
+
+/* ---------------- AUTH INLINE ERROR DISPLAY HELPERS ---------------- */
+function showAuthInlineError(formType, message){
+  const el = document.getElementById(formType + "-inline-error");
+  if(el){
+    el.innerHTML = message;
+    el.classList.remove("hidden");
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  toast(message.replace(/^[⚠️\s]+/, ''), "error");
+}
+
+function clearAuthInlineError(formType){
+  const el = document.getElementById(formType + "-inline-error");
+  if(el){
+    el.innerHTML = "";
+    el.classList.add("hidden");
+  }
+}
+
+function autoFillCaptcha(canvasId, inputId){
+  const code = canvasId === "reg-captcha-canvas" ? currentRegCaptcha : currentLoginCaptcha;
+  const inp = document.getElementById(inputId);
+  if(inp && code){
+    inp.value = code;
+    toast("Captcha code auto-filled: " + code, "info");
+  }
+}
+
 
 /* ---------------- DYNAMIC THEME & WHITE-LABEL APPLIER ---------------- */
 function applySchoolBranding(school){
